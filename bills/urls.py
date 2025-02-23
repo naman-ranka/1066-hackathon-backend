@@ -5,6 +5,4 @@ from .views import BillViewSet
 router = DefaultRouter()
 router.register(r'bills', BillViewSet, basename='bill')
 
-urlpatterns = [
-    path('api/', include(router.urls)),
-]
+urlpatterns = router.urls

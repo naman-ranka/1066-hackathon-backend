@@ -1,3 +1,8 @@
 # add the requirements.txt file to the bills folder
 plotly
+python-dotenv
+# rest framework
+djangorestframework
+django
+django-cors-headers
 
