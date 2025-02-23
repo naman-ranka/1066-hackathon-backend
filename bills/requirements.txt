@@ -5,4 +5,4 @@ python-dotenv
 djangorestframework
 django
 django-cors-headers
-
+google-generativeai

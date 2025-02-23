@@ -1,81 +1,85 @@
-# llm/utils.py
 import os
-import requests
+import base64
+from django.conf import settings
+import openai
+from google import genai
+from google.genai import types
 
-def upload_to_gemini(file_path, mime_type):
-    """
-    Upload the file to Gemini using their REST API.
-    Replace the upload URL and payload according to Gemini documentation.
-    """
-    api_key = os.environ.get("GEMINI_API_KEY")
+OPENAI_MODEL = "gpt-4o-mini"
+GEMINI_MODEL = "gemini-2.0-flash-exp"
+
+def encode_image_to_base64(image_data):
+    """Convert image data to base64 encoded string."""
+    try:
+        base64_image = base64.b64encode(image_data).decode("utf-8")
+        return f"data:image/jpeg;base64,{base64_image}"
+    except Exception as e:
+        raise Exception(f"Error encoding image: {str(e)}")
+
+def read_prompt_file():
+    """Read and return the content of the prompt file."""
+    prompt_file_path = os.path.join(settings.BASE_DIR, "prompt.txt")
+    try:
+        with open(prompt_file_path, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    except Exception as e:
+        raise Exception(f"Failed to read prompt file: {str(e)}")
+
+def process_receipt_with_openai(image_data):
+    """Process receipt using OpenAI's vision model."""
+    # Get API key
+    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY not set in environment variables.")
-
-    headers = {
-        "Authorization": f"Bearer {api_key}"
-    }
-    # Replace with the actual Gemini file upload endpoint.
-    upload_url = "https://gemini.googleapis.com/v1/upload"
-    with open(file_path, "rb") as f:
-        files = {
-            "file": (os.path.basename(file_path), f, mime_type)
-        }
-        data = {
-            "displayName": os.path.basename(file_path),
-            "mimeType": mime_type
-        }
-        # For testing only: disable SSL verification (do not use in production)
-        response = requests.post(upload_url, headers=headers, files=files, data=data, verify=False)
-        response.raise_for_status()
-        file_info = response.json().get("file")
-        if not file_info:
-            raise ValueError("Invalid response from Gemini file upload.")
-        return file_info
-
-def call_gemini_chat(file_data, prompt):
-    """
-    Starts a chat session with Gemini by sending the image reference and prompt.
-    Replace the chat URL and payload according to Gemini documentation.
-    """
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY not set in environment variables.")
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    # Replace with the actual Gemini chat endpoint.
-    chat_url = "https://gemini.googleapis.com/v1/chat"
-    history = [
-        {
-            "role": "user",
-            "parts": [
+        raise Exception("OPENAI_API_KEY is not set.")
+    
+    # Initialize OpenAI client and prepare data
+    openai.api_key = api_key
+    data_url = encode_image_to_base64(image_data)
+    prompt = read_prompt_file()
+    
+    try:
+        response = openai.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
                 {
-                    "fileData": {
-                        "mimeType": file_data.get("mimeType"),
-                        "fileUri": file_data.get("uri")
-                    }
-                },
-                {
-                    "text": prompt
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
                 }
+            ],
+            max_tokens=3000,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        raise Exception(f"OpenAI API error: {str(e)}")
+
+def process_receipt_with_gemini(image_data):
+    """Process receipt using Google's Gemini vision model."""
+    # Get API key
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise Exception("GEMINI_API_KEY is not set.")
+    
+    try:
+        
+        # model = genai.GenerativeModel(GEMINI_MODEL)
+        client = genai.Client(api_key=api_key)
+        
+        # Get prompt
+        prompt = read_prompt_file()
+        
+        # Create the response
+        response = client.model.generate_content(
+            model=GEMINI_MODEL,
+            contents=[
+                prompt,
+                types.Part.from_bytes(image_data, mime_type="image/jpeg")
             ]
-        }
-    ]
-    payload = {
-        "model": "gemini-2.0-flash-thinking-exp-01-21",
-        "generationConfig": {
-            "temperature": 0.7,
-            "topP": 0.95,
-            "topK": 64,
-            "maxOutputTokens": 65536,
-            "responseMimeType": "text/plain"
-        },
-        "history": history,
-        "message": "Generate response based on the provided prompt and image."
-    }
-    # For testing only: disable SSL verification (do not use in production)
-    response = requests.post(chat_url, headers=headers, json=payload, verify=False)
-    response.raise_for_status()
-    return response.json()
+        )
+        
+        return response.text
+    except Exception as e:
+        print(e)
+        raise Exception(f"Gemini API error: {str(e)}")

@@ -37,7 +37,7 @@ Step 3: Format the Output as a JSON Object
     "storeName": "",
     "storeAddress": "",
     "storeContact": "",
-    "dateTimeOfPurchase": ""
+    "dateTimeOfPurchase": "" 2023-10-25(strictly i this format)
   },
   "items": [
     {
@@ -93,7 +93,7 @@ Example Output
     "storeName": "Trader Joe’s",
     "storeAddress": "940 E. University Drive, Suite 105, Tempe, AZ 85281",
     "storeContact": "480-968-1573",
-    "dateTimeOfPurchase": "01-07-25 20:43"
+    "dateTimeOfPurchase": "2023-10-25" (stictly in this format)
   },
   "items": [
     {
