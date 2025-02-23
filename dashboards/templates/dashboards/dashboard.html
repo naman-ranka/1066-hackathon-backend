@@ -3,128 +3,227 @@
 <html>
 <head>
     <title>Bill Analysis Dashboard</title>
+    <!-- Plotly -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Basic styling -->
     <style>
         body {
-            background-color: rgba(0, 0, 0, 0.19);
-            color: #22dedb;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
         }
-        .chart-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background-color: #1e1e1e;
-            border-radius: 10px;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        .nav-link {
+            display: block;
+            padding: 10px 0;
+            color: #555;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            color: #007bff;
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: 200px; /* same as sidebar width */
+            padding: 20px;
+        }
+
+        /* Top bar for cards */
+        .cards-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
         .card {
-            background-color: #deb522;
-            color: black;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
+            flex: 1;
+            background-color: #fff;
             margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 200px;
         }
-        .card img {
-            width: 50px;
-            margin-bottom: 10px;
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #777;
         }
-        .card-title {
-            font-size: 18px;
+        .card .value {
+            font-size: 1.5rem;
             font-weight: bold;
+            color: #333;
         }
-        .card-value {
-            font-size: 22px;
-            font-weight: bold;
+
+        /* Charts container */
+        .charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
+        .chart-box {
+            width: 48%;
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .chart-box h4 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Dropdown styling */
         .dropdown-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            text-align: center;
+            margin-bottom: 20px;
         }
         .dropdown {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #deb522;
-            background-color: #1e1e1e;
-            color: #deb522;
-        }
-        .card-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px auto;
-            max-width: 800px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Bill Analysis Dashboard</h1>
-    
-    <div class="dropdown-container">
-        <select id="time-filter-dropdown" class="dropdown">
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-            <option value="yearly">Yearly</option>
-        </select>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar"></div>
+        <h2>My Dashboard</h2>
+        <a href="/" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Transactions</a>
+        <a href="#" class="nav-link">Analytics</a>
+        <a href="#" class="nav-link">Settings</a>
     </div>
-
-    <div class="card-container">
-        <div class="card">
-            <div class="card-title">Total Spent</div>
-            <div id="total-spent" class="card-value">${{ total_spent_monthly }}</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Top Spent Item</div>
-            <div id="top-spent-item" class="card-value">{{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}</div>
-        </div>
-    </div>
-
-    <div class="chart-container">
-        <div id="time-series"></div>
-    </div>
-
-    <div class="chart-container">
-        <div id="item-pie"></div>
-    </div>
-
+    <button id="toggle-sidebar" style="position: fixed; top: 20px; left: 220px;">Toggle Sidebar</button>
     <script>
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+                this.style.left = '220px';
+            } else {
+                sidebar.style.display = 'none';
+                this.style.left = '20px';
+            }
+        });
+    </script>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <h1>Bill Analysis Dashboard</h1>
+
+        <!-- DROPDOWN FOR TIME FILTER -->
+        <div class="dropdown-container">
+            <select id="time-filter-dropdown" class="dropdown">
+                <option value="monthly" selected>Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </div>
+
+        <!-- TOP CARDS (STATS) -->
+        <div class="cards-row">
+            <div class="card">
+                <h3>Total Spent</h3>
+                <div id="total-spent" class="value">${{ total_spent_monthly }}</div>
+            </div>
+            <div class="card">
+                <h3>Top Spent Item</h3>
+                <div id="top-spent-item" class="value">
+                    {% if top_spent_item_monthly %}
+                        {{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}
+                    {% else %}
+                        No Data
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="charts-container">
+            <!-- Time-series chart (left) -->
+            <div class="chart-box">
+                <h4 id="time-series-title">Monthly Spending</h4>
+                <div id="time-series"></div>
+            </div>
+
+            <!-- Pie chart (right) -->
+            <div class="chart-box">
+                <h4>Top 10 Items</h4>
+                <div id="item-pie"></div>
+            </div>
+
+            <!-- Additional charts -->
+            <div class="chart-box">
+                <h4>Category Spending</h4>
+                <div id="category-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLOTLY SCRIPTS -->
+    <script>
+        // Data passed in from the Django context
         var monthlySeriesData = {{ monthly_series_plot|safe }};
         var weeklySeriesData = {{ weekly_series_plot|safe }};
         var yearlySeriesData = {{ yearly_series_plot|safe }};
-        var itemPieData = {{ item_pie_plot|safe }};
+        var itemPieData      = {{ item_pie_plot|safe }};
+        var categoryBarData  = {{ category_bar_plot|safe }};
 
-        var totalSpentMonthly = {{ total_spent_monthly }};
-        var totalSpentWeekly = {{ total_spent_weekly }};
-        var totalSpentYearly = {{ total_spent_yearly }};
+        // Totals
+        var totalSpentMonthly = {{ total_spent_monthly|default:0 }};
+        var totalSpentWeekly  = {{ total_spent_weekly|default:0 }};
+        var totalSpentYearly  = {{ total_spent_yearly|default:0 }};
 
-        var topSpentItemMonthly = "{{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}";
-        var topSpentItemWeekly = "{{ top_spent_item_weekly.name }}: ${{ top_spent_item_weekly.total }}";
-        var topSpentItemYearly = "{{ top_spent_item_yearly.name }}: ${{ top_spent_item_yearly.total }}";
+        // Top items
+        var topSpentItemMonthly = "{% if top_spent_item_monthly %}{{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}{% else %}No Data{% endif %}";
+        var topSpentItemWeekly  = "{% if top_spent_item_weekly %}{{ top_spent_item_weekly.name }}: ${{ top_spent_item_weekly.total }}{% else %}No Data{% endif %}";
+        var topSpentItemYearly  = "{% if top_spent_item_yearly %}{{ top_spent_item_yearly.name }}: ${{ top_spent_item_yearly.total }}{% else %}No Data{% endif %}";
 
+        // Initial Plot
+        Plotly.newPlot('time-series', monthlySeriesData.data, monthlySeriesData.layout);
+        Plotly.newPlot('item-pie', itemPieData.data, itemPieData.layout);
+        Plotly.newPlot('category-bar', categoryBarData.data, categoryBarData.layout);
+
+        // Update time-series on dropdown change
         function updateTimeSeriesPlot(filter) {
             if (filter === 'monthly') {
                 Plotly.newPlot('time-series', monthlySeriesData.data, monthlySeriesData.layout);
+                document.getElementById('time-series-title').innerText = "Monthly Spending";
                 document.getElementById('total-spent').innerText = `$${totalSpentMonthly}`;
                 document.getElementById('top-spent-item').innerText = topSpentItemMonthly;
             } else if (filter === 'weekly') {
                 Plotly.newPlot('time-series', weeklySeriesData.data, weeklySeriesData.layout);
+                document.getElementById('time-series-title').innerText = "Weekly Spending";
                 document.getElementById('total-spent').innerText = `$${totalSpentWeekly}`;
                 document.getElementById('top-spent-item').innerText = topSpentItemWeekly;
             } else if (filter === 'yearly') {
                 Plotly.newPlot('time-series', yearlySeriesData.data, yearlySeriesData.layout);
+                document.getElementById('time-series-title').innerText = "Yearly Spending";
                 document.getElementById('total-spent').innerText = `$${totalSpentYearly}`;
                 document.getElementById('top-spent-item').innerText = topSpentItemYearly;
             }
         }
 
-        // Initial plot
-        updateTimeSeriesPlot('monthly');
-        Plotly.newPlot('item-pie', itemPieData.data, itemPieData.layout);
-
+        // Listen for dropdown changes
         document.getElementById('time-filter-dropdown').addEventListener('change', function() {
             var filter = this.value;
             updateTimeSeriesPlot(filter);
