@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bill Analysis Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Bill Analysis Dashboard</h1>
+    
+    <div class="chart-container">
+        <div id="time-series"></div>
+    </div>
+
+    <div class="chart-container">
+        <div id="pie-chart"></div>
+    </div>
+
+    <script>
+        var timeSeriesData = {{ time_series_plot|safe }};
+        var pieData = {{ pie_plot|safe }};
+
+        Plotly.newPlot('time-series', timeSeriesData.data, timeSeriesData.layout);
+        Plotly.newPlot('pie-chart', pieData.data, pieData.layout);
+    </script>
+</body>
+</html>

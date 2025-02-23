@@ -1,0 +1,3 @@
+# add the requirements.txt file to the bills folder
+plotly
+
