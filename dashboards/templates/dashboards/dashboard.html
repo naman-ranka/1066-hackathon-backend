@@ -39,7 +39,7 @@
 
         /* Main content area */
         .main-content {
-            margin-left: 200px; /* same as sidebar width */
+            margin-left: 200px;
             padding: 20px;
         }
 
@@ -105,7 +105,7 @@
 </head>
 <body>
     <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar"></div>
+    <div class="sidebar" id="sidebar">
         <h2>My Dashboard</h2>
         <a href="/" class="nav-link">Home</a>
         <a href="#" class="nav-link">Transactions</a>
@@ -113,18 +113,6 @@
         <a href="#" class="nav-link">Settings</a>
     </div>
     <button id="toggle-sidebar" style="position: fixed; top: 20px; left: 220px;">Toggle Sidebar</button>
-    <script>
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            var sidebar = document.getElementById('sidebar');
-            if (sidebar.style.display === 'none') {
-                sidebar.style.display = 'block';
-                this.style.left = '220px';
-            } else {
-                sidebar.style.display = 'none';
-                this.style.left = '20px';
-            }
-        });
-    </script>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
@@ -143,13 +131,13 @@
         <div class="cards-row">
             <div class="card">
                 <h3>Total Spent</h3>
-                <div id="total-spent" class="value">${{ total_spent_monthly }}</div>
+                <div id="total-spent" class="value">${{ total_spent_monthly|floatformat:2 }}</div>
             </div>
             <div class="card">
                 <h3>Top Spent Item</h3>
                 <div id="top-spent-item" class="value">
                     {% if top_spent_item_monthly %}
-                        {{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}
+                        {{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total|floatformat:2 }}
                     {% else %}
                         No Data
                     {% endif %}
@@ -159,19 +147,19 @@
 
         <!-- CHARTS -->
         <div class="charts-container">
-            <!-- Time-series chart (left) -->
+            <!-- Time-series chart -->
             <div class="chart-box">
                 <h4 id="time-series-title">Monthly Spending</h4>
                 <div id="time-series"></div>
             </div>
 
-            <!-- Pie chart (right) -->
+            <!-- Pie chart -->
             <div class="chart-box">
                 <h4>Top 10 Items</h4>
                 <div id="item-pie"></div>
             </div>
 
-            <!-- Additional charts -->
+            <!-- Category chart -->
             <div class="chart-box">
                 <h4>Category Spending</h4>
                 <div id="category-bar"></div>
@@ -181,52 +169,64 @@
 
     <!-- PLOTLY SCRIPTS -->
     <script>
-        // Data passed in from the Django context
+        // Data from Django context
         var monthlySeriesData = {{ monthly_series_plot|safe }};
         var weeklySeriesData = {{ weekly_series_plot|safe }};
         var yearlySeriesData = {{ yearly_series_plot|safe }};
-        var itemPieData      = {{ item_pie_plot|safe }};
-        var categoryBarData  = {{ category_bar_plot|safe }};
+        var itemPieData = {{ item_pie_plot|safe }};
+        var categoryBarData = {{ category_bar_plot|safe }};
 
-        // Totals
-        var totalSpentMonthly = {{ total_spent_monthly|default:0 }};
-        var totalSpentWeekly  = {{ total_spent_weekly|default:0 }};
-        var totalSpentYearly  = {{ total_spent_yearly|default:0 }};
+        // Totals with formatting
+        var totalSpentMonthly = {{ total_spent_monthly|default:0|floatformat:2 }};
+        var totalSpentWeekly = {{ total_spent_weekly|default:0|floatformat:2 }};
+        var totalSpentYearly = {{ total_spent_yearly|default:0|floatformat:2 }};
 
-        // Top items
-        var topSpentItemMonthly = "{% if top_spent_item_monthly %}{{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total }}{% else %}No Data{% endif %}";
-        var topSpentItemWeekly  = "{% if top_spent_item_weekly %}{{ top_spent_item_weekly.name }}: ${{ top_spent_item_weekly.total }}{% else %}No Data{% endif %}";
-        var topSpentItemYearly  = "{% if top_spent_item_yearly %}{{ top_spent_item_yearly.name }}: ${{ top_spent_item_yearly.total }}{% else %}No Data{% endif %}";
+        // Top items with formatting
+        var topSpentItemMonthly = "{% if top_spent_item_monthly %}{{ top_spent_item_monthly.name }}: ${{ top_spent_item_monthly.total|floatformat:2 }}{% else %}No Data{% endif %}";
+        var topSpentItemWeekly = "{% if top_spent_item_weekly %}{{ top_spent_item_weekly.name }}: ${{ top_spent_item_weekly.total|floatformat:2 }}{% else %}No Data{% endif %}";
+        var topSpentItemYearly = "{% if top_spent_item_yearly %}{{ top_spent_item_yearly.name }}: ${{ top_spent_item_yearly.total|floatformat:2 }}{% else %}No Data{% endif %}";
 
-        // Initial Plot
+        // Initial plots
         Plotly.newPlot('time-series', monthlySeriesData.data, monthlySeriesData.layout);
         Plotly.newPlot('item-pie', itemPieData.data, itemPieData.layout);
         Plotly.newPlot('category-bar', categoryBarData.data, categoryBarData.layout);
 
         // Update time-series on dropdown change
-        function updateTimeSeriesPlot(filter) {
-            if (filter === 'monthly') {
-                Plotly.newPlot('time-series', monthlySeriesData.data, monthlySeriesData.layout);
-                document.getElementById('time-series-title').innerText = "Monthly Spending";
-                document.getElementById('total-spent').innerText = `$${totalSpentMonthly}`;
-                document.getElementById('top-spent-item').innerText = topSpentItemMonthly;
-            } else if (filter === 'weekly') {
-                Plotly.newPlot('time-series', weeklySeriesData.data, weeklySeriesData.layout);
-                document.getElementById('time-series-title').innerText = "Weekly Spending";
-                document.getElementById('total-spent').innerText = `$${totalSpentWeekly}`;
-                document.getElementById('top-spent-item').innerText = topSpentItemWeekly;
-            } else if (filter === 'yearly') {
-                Plotly.newPlot('time-series', yearlySeriesData.data, yearlySeriesData.layout);
-                document.getElementById('time-series-title').innerText = "Yearly Spending";
-                document.getElementById('total-spent').innerText = `$${totalSpentYearly}`;
-                document.getElementById('top-spent-item').innerText = topSpentItemYearly;
-            }
-        }
-
-        // Listen for dropdown changes
         document.getElementById('time-filter-dropdown').addEventListener('change', function() {
-            var filter = this.value;
-            updateTimeSeriesPlot(filter);
+            const filter = this.value;
+            let data, title, total, topItem;
+            
+            switch(filter) {
+                case 'weekly':
+                    data = weeklySeriesData;
+                    title = 'Weekly Spending';
+                    total = totalSpentWeekly;
+                    topItem = topSpentItemWeekly;
+                    break;
+                case 'yearly':
+                    data = yearlySeriesData;
+                    title = 'Yearly Spending';
+                    total = totalSpentYearly;
+                    topItem = topSpentItemYearly;
+                    break;
+                default: // monthly
+                    data = monthlySeriesData;
+                    title = 'Monthly Spending';
+                    total = totalSpentMonthly;
+                    topItem = topSpentItemMonthly;
+            }
+
+            Plotly.newPlot('time-series', data.data, data.layout);
+            document.getElementById('time-series-title').textContent = title;
+            document.getElementById('total-spent').textContent = `$${total}`;
+            document.getElementById('top-spent-item').textContent = topItem;
+        });
+
+        // Toggle sidebar
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+            this.style.left = sidebar.style.display === 'none' ? '20px' : '220px';
         });
     </script>
 </body>
