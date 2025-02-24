@@ -6,20 +6,21 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F8F8FA;
-            color: blue;
+            color: #2c3e50;
         }
         .card-container {
             display: flex;
             justify-content: space-around;
             margin: 20px auto;
-            max-width: 800px;
+            max-width: 1000px;
+            flex-wrap: wrap;
         }
         .card {
-            background-color: #FFFFFF;
-            color: #333333;
+            background-color: #fff;
+            color: #333;
             border: none;
             border-radius: 10px;
             padding: 20px;
@@ -33,7 +34,6 @@
             font-weight: bold;
         }
         .card-value {
-            color: red;
             font-size: 22px;
             font-weight: bold;
         }
@@ -57,12 +57,6 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .group-item {
-            background-color: #e0f7fa;
-        }
-        .person-item {
-            background-color: #ffe0b2;
-        }
     </style>
 </head>
 <body>
@@ -71,33 +65,50 @@
     <div class="card-container">
         <div class="card">
             <div class="card-title">Total Spent</div>
-            <div class="card-value">${{ total_spent }}</div>
+            <div class="card-value">${{ total_spent|default:0|floatformat:2 }}</div>
         </div>
         <div class="card">
             <div class="card-title">Total Owed by Me</div>
-            <div class="card-value">${{ total_owed_by_user }}</div>
+            <div class="card-value balance-negative">${{ total_owed_by_user|default:0|floatformat:2 }}</div>
         </div>
         <div class="card">
             <div class="card-title">Total Owed to Me</div>
-            <div class="card-value">${{ total_owed_to_user }}</div>
+            <div class="card-value balance-positive">${{ total_owed_to_user|default:0|floatformat:2 }}</div>
         </div>
     </div>
 
     <div class="overview-container">
         <div class="overview-title">Group Balances</div>
         <ul class="overview-list">
-            {% for group in group_balances %}
-                <li class="overview-item">{{ group.name }}: ${{ group.total }}</li>
-            {% endfor %}
+            {% if group_balances %}
+                {% for group in group_balances %}
+                    <li class="overview-item group-item">
+                        <span>{{ group.group__name|default:"Ungrouped" }}</span>
+                        <span>${{ group.total|floatformat:2 }}</span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="overview-item">No group expenses recorded</li>
+            {% endif %}
         </ul>
     </div>
 
     <div class="overview-container">
         <div class="overview-title">Person Balances</div>
         <ul class="overview-list">
-            {% for person in person_balances %}
-                <li class="overview-item">{{ person.name }} - Paid: ${{ person.total_paid }}, Owed: ${{ person.total_owed }}</li>
-            {% endfor %}
+            {% if person_balances %}
+                {% for person in person_balances %}
+                    <li class="overview-item person-item">
+                        <div>
+                            <strong>{{ person.name }}</strong><br>
+                            <span class="balance-positive">Received: ${{ person.total_paid|floatformat:2 }}</span><br>
+                            <span class="balance-negative">Owed: ${{ person.total_owed|floatformat:2 }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="overview-item">No participant data available</li>
+            {% endif %}
         </ul>
     </div>
 </body>
