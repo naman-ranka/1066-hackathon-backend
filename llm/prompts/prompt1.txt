@@ -1,0 +1,136 @@
+Okay, let's refine the prompt to address the tax calculation and verification improvements.
+
+Input: An image of a shopping bill or receipt.
+Output: A structured JSON object with correctly extracted and verified data.
+
+Processing Instructions:
+Step 1: Extract Key Details
+Store Information:
+    Store Name: Extract the name of the store.
+    Store Address: Extract the store address, if available.
+    Store Contact: Extract contact information (phone, website, etc.), if available.
+    Date and Time of Purchase: Extract the date and time of the purchase. Format the date strictly as YYYY-MM-DD and include time if available (YYYY-MM-DD HH:MM).
+
+Tax Information Extraction:
+    Tax Rate(s): Check the bill for explicit tax rates (e.g., "Tax 8.1%", "Produce Tax 1.8%"). Store any identified tax rates.
+    Tax Amounts: Check for explicit tax amounts. This could be a total tax amount, or tax amounts categorized by type (e.g., "Tax: $1.61", "Produce Tax: $0.04", "Packaged Tax: $0.57"). Store any identified tax amounts.
+
+List of Items:
+    For each item, extract:
+        Item Name: The description of the item.
+        Quantity: The quantity purchased (if specified). Default to 1 if not specified.
+        Price per unit: The price of a single unit of the item.
+        Total Price: The total price of the item line (quantity * price per unit, before taxes and extra charges).
+        Item Type: Classify each item as "Produce" or "Packaged" based on the item name (keywords like 'Fresh', 'Organic', fruits, vegetables are often produce; breads, cheese, snacks are often packaged). If item type is unclear, default to "Packaged".
+
+Extra Charges:
+    Identify any extra charges like "Free delivery from store", "Driver tip". Store the description and amount for each.
+
+Payment Details:
+    Payment Method: Extract the payment method used (e.g., "Credit Card ending in 9668", "Cash", "Debit Card").
+
+Step 2:  Data Structuring and Type Assignment
+    For each extracted item, determine:
+        itemType: Assign "Produce" or "Packaged" based on keywords in itemName (fruits, vegetables -> Produce; breads, cheese, snacks -> Packaged. Default to "Packaged" if unclear).
+
+Step 3: Format the Output as a JSON Object
+```json
+{
+  "storeInformation": {
+    "storeName": "",
+    "storeAddress": "",
+    "storeContact": "",
+    "dateTimeOfPurchase": "YYYY-MM-DD HH:MM"
+  },
+  "items": [
+    {
+      "itemName": "",
+      "quantity": 0,
+      "pricePerUnit": 0.0,
+      "totalPrice": 0.0,
+      "itemType": "",
+      "taxRate": 0.0,
+      "taxAmount": 0.0,
+      "itemTotalAfterChargesAndTax": 0.0
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 0.0,
+  "totalExtraChargesDistributed": 0.0,
+  "taxOnProduce": 0.0,
+  "taxOnPackaged": 0.0,
+  "grandTotal": 0.0,
+  "paymentDetails": {
+    "paymentMethod": ""
+  }
+}
+Step 4: Verification and Calculation Process
+
+4.1. Item Price Verification:
+For each item:
+Calculate calculatedTotalPrice = quantity * pricePerUnit.
+Compare calculatedTotalPrice with extractedTotalPrice.
+If they don't match, record a warning: "Warning: Item '{itemName}' price mismatch. Calculated: {calculatedTotalPrice}, Extracted: {extractedTotalPrice}".
+
+4.2. Subtotal Verification:
+Calculate calculatedSubtotal = sum of all extracted totalPrice from all items.
+Compare calculatedSubtotal with the subtotalBeforeChargesAndTaxes extracted from the bill.
+If they don't match, record a warning: "Warning: Subtotal mismatch. Calculated: {calculatedSubtotal}, Extracted: {extractedSubtotal}".
+
+4.3. Tax Calculation and Verification:
+Determine Tax Logic:
+Scenario A: Explicit Tax Breakdown (taxOnProduce, taxOnPackaged are given):
+Use extracted taxOnProduce and taxOnPackaged values.
+No item-level tax calculation in this step, rely on bill's provided totals.
+
+    Scenario B: Total Tax Amount Only (e.g., "Tax: $1.61"):
+        Use the extracted total tax amount.
+        Proportionally distribute this total tax amount across all items based on their `totalPrice` to calculate `taxAmount` for each item. Set `taxRate` to 0 for all items as individual rates are unknown.
+        Set `taxOnProduce` and `taxOnPackaged` to 0 as breakdown isn't available.
+
+    Scenario C: Tax Rates Specified (e.g., "Produce Tax 1.8%", "Packaged Tax 8.1%"):
+        Apply the extracted tax rates based on the `itemType`.
+        For each item:
+            If `itemType` is "Produce", `taxRate = 1.8%`. If "Packaged", `taxRate = 8.1%` (or use the rates extracted from bill if different).
+            Calculate `taxAmount = totalPrice * taxRate`.
+            Update item's `taxRate` and `taxAmount`.
+        Calculate `taxOnProduce = sum of taxAmount for all Produce items`.
+        Calculate `taxOnPackaged = sum of taxAmount for all Packaged items`.
+
+    Scenario D: No Explicit Tax Information on Bill:
+        Set `taxRate = 0`, `taxAmount = 0`, `taxOnProduce = 0`, `taxOnPackaged = 0` for all items and in the summary.
+
+Verification based on determined scenario:
+    Scenario A & B:  Verify if sum of item `taxAmount` (if calculated in B) approximately equals the extracted total tax amount.
+    Scenario C: Verify if calculated `taxOnProduce` and `taxOnPackaged` match any provided breakdown on the bill (if available).
+    Record warnings for any tax calculation discrepancies, specifying the type of discrepancy (e.g., "Warning: Total Tax amount mismatch", "Warning: Produce Tax calculation mismatch").
+4.4. Grand Total Verification:
+Calculate calculatedGrandTotal = calculatedSubtotal + totalExtraChargesDistributed + (taxOnProduce + taxOnPackaged) (or calculatedSubtotal + totalExtraChargesDistributed + totalTaxAmount in Scenario B, or just calculatedSubtotal + totalExtraChargesDistributed in Scenario D).
+Compare calculatedGrandTotal with the grandTotal extracted from the bill.
+If they don't match, record a warning: "Warning: Grand Total mismatch. Calculated: {calculatedGrandTotal}, Extracted: {extractedGrandTotal}".
+
+Step 5: Final Item Total Calculation:
+For each item, calculate itemTotalAfterChargesAndTax = totalPrice + extraCharges + taxAmount. (Note: extraCharges here refer to item-level distributed extra charges, if any, not the total extra charges from the bill unless distributed proportionally which is not requested in this prompt but was in previous iterations and might be added back if needed for service charges etc).  In this version, 'extraCharges' at item level remains 0 as per instructions.
+
+Step 6: Output JSON and Verification Warnings
+Construct the JSON object as defined in Step 3, including calculated and extracted values.
+Include all recorded warnings in a separate section of the output or as annotations in the JSON if required. If no warnings, indicate verification passed.
+
+Example Output with Verification (if discrepancies are found, warnings should be included):
+
+JSON
+
+{
+  "storeInformation": { ... },
+  "items": [ ... ],
+  "subtotalBeforeChargesAndTaxes": 0.0,
+  "totalExtraChargesDistributed": 0.0,
+  "taxOnProduce": 0.0,
+  "taxOnPackaged": 0.0,
+  "grandTotal": 0.0,
+  "paymentDetails": { ... },
+  "verificationWarnings": [
+    "Warning: Item 'Example Item' price mismatch. Calculated: 10.00, Extracted: 9.50",
+    "Warning: Grand Total mismatch. Calculated: 55.25, Extracted: 54.90"
+  ]
+}

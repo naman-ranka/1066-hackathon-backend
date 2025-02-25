@@ -1,0 +1,131 @@
+Input: An image of a shopping bill or receipt.
+Output: A structured JSON object with correctly extracted and verified data.
+
+Processing Instructions:
+Step 1: Extract Key Details
+Store Information
+
+Store Name
+Store Address
+Store Contact (if available)
+Date and Time of Purchase
+List of Items with:
+
+Item Name
+Quantity (if specified)
+Price per unit (if applicable)
+Total Price per item before any extra charges/taxes
+Item Type (Produce or Packaged)
+Tax Rate Applied (1.8% for Produce, 8.1% for Packaged)
+Extra Charges Applied (if any)
+Item Total After Charges and Taxes
+Tax Breakdown
+
+Tax on Produce (1.8%)
+Tax on Packaged Goods (8.1%)
+Total Additional Charges (if any, like service charge)
+Grand Total (Subtotal + Tax + Charges)
+Payment Details
+
+Payment Method (Cash, Credit Card, Debit Card, etc.)
+Step 2: Handling Extra Charges
+If there are additional charges (like a service charge), distribute them equally across all items.
+Update the total price per item after adding proportional extra charges.
+Step 3: Format the Output as a JSON Object
+{
+  "storeInformation": {
+    "storeName": "",
+    "storeAddress": "",
+    "storeContact": "",
+    "dateTimeOfPurchase": "" 2023-10-25(strictly i this format)
+  },
+  "items": [
+    {
+      "itemName": "",
+      "quantity": 0,
+      "pricePerUnit": 0.0,
+      "totalPrice": 0.0,
+      "itemType": "",
+      "taxRate": 0.0,
+      "extraCharges": 0.0,
+      "taxAmount": 0.0,
+      "itemTotalAfterChargesAndTax": 0.0
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 0.0,
+  "totalExtraChargesDistributed": 0.0,
+  "taxOnProduce": 0.0,
+  "taxOnPackaged": 0.0,
+  "grandTotal": 0.0,
+  "paymentDetails": {
+    "paymentMethod": ""
+  }
+}
+Step 4: Verification Process
+Sum Check for Subtotals
+
+Ensure Subtotal = Sum of all item total prices before taxes and extra charges.
+Tax Calculation Verification
+
+Verify that the correct tax rate (1.8% or 8.1%) has been applied based on the item type.
+Compute Total Tax = Tax on Produce + Tax on Packaged and ensure correctness.
+Distribute Extra Charges Proportionally
+
+If extra charges exist, ensure they are evenly divided among all items.
+Final Grand Total Check
+
+Confirm:
+Grand Total = Subtotal + Total Extra Charges + Total Tax
+One-by-One Validation:
+Compute sum of each column individually.
+Compare with the expected total to identify any discrepancies.
+If a discrepancy is found, mark it with a warning:
+
+❌ Warning: The total does not match the expected sum. Please verify the bill manually.
+
+Step 5: Send JSON to Website
+Send the JSON object to the specified endpoint on your website to pre-fill the fields.
+
+Example Output
+{
+  "storeInformation": {
+    "storeName": "Trader Joe’s",
+    "storeAddress": "940 E. University Drive, Suite 105, Tempe, AZ 85281",
+    "storeContact": "480-968-1573",
+    "dateTimeOfPurchase": "2023-10-25" (stictly in this format)
+  },
+  "items": [
+    {
+      "itemName": "Cracked Wheat Sourdough",
+      "quantity": 1,
+      "pricePerUnit": 3.49,
+      "totalPrice": 3.49,
+      "itemType": "Packaged",
+      "taxRate": 8.1,
+      "extraCharges": 0.50,
+      "taxAmount": 0.28,
+      "itemTotalAfterChargesAndTax": 4.27
+    },
+    {
+      "itemName": "Ginger Organic (3 oz)",
+      "quantity": 1,
+      "pricePerUnit": 1.99,
+      "totalPrice": 1.99,
+      "itemType": "Produce",
+      "taxRate": 1.8,
+      "extraCharges": 0.50,
+      "taxAmount": 0.04,
+      "itemTotalAfterChargesAndTax": 2.53
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 12.87,
+  "totalExtraChargesDistributed": 3.50,
+  "taxOnProduce": 0.23,
+  "taxOnPackaged": 3.99,
+  "grandTotal": 17.41,
+  "paymentDetails": {
+    "paymentMethod": "Visa Debit"
+  }
+}

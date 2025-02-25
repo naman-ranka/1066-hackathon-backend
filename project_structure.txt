@@ -1,0 +1,58 @@
+Project Structure:
+
+
+db.sqlite3
+debug_image.jpeg
+manage.py
+
+
+bills/
+    __init__.py
+    admin.py
+    apps.py
+    models.py
+    requirements.txt
+    serializers.py
+    tests.py
+    urls.py
+    views.py
+    migrations/
+        __init__.py
+        0001_initial.py
+
+billSplitBackend/
+    __init__.py
+    asgi.py
+    settings.py
+    urls.py
+    wsgi.py
+
+dashboards/
+    __init__.py
+    from django.py
+    urls.py
+    views.py
+    templates/
+        dashboards/
+            dashboard.html
+            home.html
+
+llm/
+    __init__.py
+    admin.py
+    apps.py
+    models.py
+    multipleimageocr.py
+    ocrgoogle.py
+    tests.py
+    urls.py
+    utils.py
+    views.py
+    migrations/
+        __init__.py
+    prompts/
+        prompt.txt
+        prompt1.txt
+
+test_images/
+    spliwise_balance_overview.jpeg

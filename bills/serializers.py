@@ -4,7 +4,7 @@ from .models import Bill, Participant, Item
 class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
-        fields = ['id', 'name', 'amount_paid', 'amount_owed']
+        fields = ['id', 'name', 'bill', 'amount_paid', 'amount_owed']
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
