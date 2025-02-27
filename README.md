@@ -1,107 +1,113 @@
 # Bill Split Backend
 
-A sophisticated Django-based backend system for managing and analyzing shared expenses, featuring OCR-powered receipt scanning, real-time analytics, and intelligent bill splitting.
+A Django-based backend API for a bill splitting application that uses AI to process receipts and intelligently divide expenses among participants.
 
-## 🚀 Features
+## Features
 
-### 📊 Advanced Analytics Dashboard
-- Interactive spending visualizations using Plotly
-- Monthly, weekly, and yearly spending trends
-- Top spending categories and items
-- Personal balance overview
-- Group expense tracking
+- **Bill Management**: Create, read, update, and delete bills
+- **Receipt OCR**: Extract text from receipt images
+- **AI Processing**: Process receipts using OpenAI and Google Gemini models
+- **Split Calculations**: Calculate how expenses should be split among participants
+- **REST API**: Full API for integration with frontend applications
 
-### 🧾 Smart Receipt Processing
-- OCR-powered receipt scanning using multiple engines (Google Cloud Vision & OpenAI)
-- Intelligent text parsing and data extraction
-- Automatic item categorization
-- Support for various receipt formats
+## Tech Stack
 
-### 💰 Bill Management
-- Detailed bill tracking and storage
-- Multiple participants handling
-- Flexible item split options
-- Tax and additional charges management
-- Real-time balance calculations
+- **Framework**: Django + Django REST Framework
+- **Database**: SQLite (Development) / PostgreSQL (Production)
+- **AI Services**: OpenAI GPT-4, Google Gemini
+- **Image Processing**: Tesseract OCR
+- **Containerization**: Docker + Docker Compose
+- **Web Server**: Nginx + Gunicorn
+- **SSL**: Let's Encrypt / Certbot
 
-### ⚙️ Task Management System
-- Built-in project task tracking
-- Support for various task types:
-  - OCR Script Development
-  - API Endpoint Creation
-  - Frontend UI Development
-  - Database Model Creation
-  - Authentication Implementation
-  - LLM Prompt Tuning
+## Prerequisites
 
-## 🛠️ Technology Stack
+- Python 3.12+
+- Docker and Docker Compose (for containerized deployment)
+- API keys for OpenAI and Google Gemini
 
-- **Backend Framework**: Django + Django REST Framework
-- **Database**: SQLite3 (easily configurable for other databases)
-- **API**: RESTful architecture
-- **Data Visualization**: Plotly
-- **Machine Learning**: 
-  - Google Cloud Vision API
-  - OpenAI API
-- **CORS**: Enabled for frontend integration
+## Local Development Setup
 
-## 📦 Project Structure
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd 1066-hackathon-backend
+   ```
 
-```
-billSplitBackend/
-├── bills/                  # Core bill management app
-├── dashboards/            # Analytics and visualization
-├── llm/                   # OCR and ML processing
-├── tasks/                 # Project management
-└── test_images/          # Test receipt images
-```
+2. **Create a virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-## 🚀 Getting Started
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1. Clone the repository
-2. Install dependencies:
-```bash
-pip install -r bills/requirements.txt
-```
+4. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys and settings
+   ```
 
-3. Set up environment variables:
-- Create a `.env` file in the root directory
-- Add necessary API keys:
-  ```
-  OPENAI_API_KEY=your_openai_key
-  GOOGLE_CLOUD_API_KEY=your_google_cloud_key
-  ```
+5. **Run migrations**:
+   ```bash
+   python manage.py migrate
+   ```
 
-4. Run migrations:
-```bash
-python manage.py migrate
-```
+6. **Start the development server**:
+   ```bash
+   python manage.py runserver
+   ```
 
-5. Start the development server:
-```bash
-python manage.py runserver
-```
+## Docker Deployment
 
-## 🔗 API Endpoints
+1. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys and settings
+   ```
 
-- `/api/bills/` - Bill management endpoints
-- `/api/process-receipt/` - OCR receipt processing
-- `/api/tasks/` - Task management
-- `/dashboard/` - Analytics dashboard
-- `/` - Home page with balance overview
+2. **Build and start the containers**:
+   ```bash
+   docker-compose up -d
+   ```
 
-## 💡 Future Enhancements
+3. **Initialize the database** (first run only):
+   ```bash
+   docker-compose exec web python manage.py migrate
+   docker-compose exec web python manage.py createsuperuser
+   ```
 
-- Add user authentication and authorization
-- Implement real-time notifications
-- Add support for multiple currencies
-- Enhance OCR accuracy with ML model fine-tuning
-- Add export functionality for financial reports
+## API Endpoints
 
-## 👨‍💻 Contributing
+### Bills
+- `GET /api/bills/` - List all bills
+- `POST /api/bills/` - Create a new bill
+- `GET /api/bills/{id}/` - Get a specific bill
+- `PUT /api/bills/{id}/` - Update a bill
+- `DELETE /api/bills/{id}/` - Delete a bill
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### LLM Receipt Processing
+- `POST /api/llm/process-receipt/` - Process a receipt image with AI
 
-## 📝 License
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| SECRET_KEY | Django secret key | None (required) |
+| DJANGO_DEBUG | Debug mode flag | "True" |
+| OPENAI_API_KEY | OpenAI API key | None |
+| GEMINI_API_KEY | Google Gemini API key | None |
+| DB_ENGINE | Database engine | django.db.backends.sqlite3 |
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Submit a pull request
+
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
