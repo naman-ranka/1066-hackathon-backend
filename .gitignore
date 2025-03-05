@@ -23,7 +23,7 @@ db.sqlite3-journal
 /media
 
 # Static files
-/static
+/staticfiles
 
 # Virtual environment
 venv/
