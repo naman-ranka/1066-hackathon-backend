@@ -42,15 +42,15 @@ if __name__ == "__main__":
 
     # --- Example Usage ---
     image_file_paths = [
-        "1.jpeg",
-        "2.jpeg",
-        "3.jpeg",
-        "4.jpeg",
-        "5.jpeg",
-        "6.jpeg",
-        "7.jpeg",
-        "8.jpeg",
-    ]
+        "test_images/1.jpeg",
+        "test_images/2.jpeg",
+        "test_images/3.jpeg",
+        "test_images/4.jpeg",
+        "test_images/5.jpeg",
+        "test_images/6.jpeg",
+        "test_images/7.jpeg",
+        "test_images/8.jpeg"]
+        
 
     # Create dummy image files for testing if you don't have any ready
     # (You'd typically get these from user input or a folder)
