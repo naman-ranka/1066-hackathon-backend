@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # Local apps
     "bills",
+    "bills_new",  # Added the new bills_new app
     "dashboards",
     "tasks",
     "llm",

@@ -1,0 +1,211 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 101,
+    "fields": {
+      "username": "testuser1",
+      "password": "pbkdf2_sha256$720000$Xe2HWPzWYMebKaVfYWNXav$ncx8vZj7sMDFizk8qGM3YllZp9CkSQw53d/wNRoYLkI=",
+      "email": "testuser1@example.com",
+      "first_name": "Test",
+      "last_name": "User1",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2023-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 102,
+    "fields": {
+      "username": "testuser2",
+      "password": "pbkdf2_sha256$720000$Xe2HWPzWYMebKaVfYWNXav$ncx8vZj7sMDFizk8qGM3YllZp9CkSQw53d/wNRoYLkI=",
+      "email": "testuser2@example.com",
+      "first_name": "Test",
+      "last_name": "User2",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2023-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 103,
+    "fields": {
+      "username": "testuser3",
+      "password": "pbkdf2_sha256$720000$Xe2HWPzWYMebKaVfYWNXav$ncx8vZj7sMDFizk8qGM3YllZp9CkSQw53d/wNRoYLkI=",
+      "email": "testuser3@example.com",
+      "first_name": "Test",
+      "last_name": "User3",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2023-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "bills_new.person",
+    "pk": 1,
+    "fields": {
+      "user": 101,
+      "phone_number": "1234567890"
+    }
+  },
+  {
+    "model": "bills_new.person",
+    "pk": 2,
+    "fields": {
+      "user": 102,
+      "phone_number": "0987654321"
+    }
+  },
+  {
+    "model": "bills_new.person",
+    "pk": 3,
+    "fields": {
+      "user": 103,
+      "phone_number": "5555555555"
+    }
+  },
+  {
+    "model": "bills_new.group",
+    "pk": 1,
+    "fields": {
+      "name": "Roommates",
+      "description": "For sharing apartment expenses",
+      "created_at": "2023-01-02T10:00:00Z",
+      "created_by": 1,
+      "members": [1, 2, 3]
+    }
+  },
+  {
+    "model": "bills_new.bill",
+    "pk": 1,
+    "fields": {
+      "title": "Monthly Groceries",
+      "description": "Grocery shopping for January",
+      "date": "2023-01-10",
+      "created_at": "2023-01-10T15:30:00Z",
+      "created_by": 1,
+      "group": 1
+    }
+  },
+  {
+    "model": "bills_new.billparticipant",
+    "pk": 1,
+    "fields": {
+      "bill": 1,
+      "person": 1,
+      "paid_amount": "100.00"
+    }
+  },
+  {
+    "model": "bills_new.billparticipant",
+    "pk": 2,
+    "fields": {
+      "bill": 1,
+      "person": 2,
+      "paid_amount": "0.00"
+    }
+  },
+  {
+    "model": "bills_new.billparticipant",
+    "pk": 3,
+    "fields": {
+      "bill": 1,
+      "person": 3,
+      "paid_amount": "0.00"
+    }
+  },
+  {
+    "model": "bills_new.billitem",
+    "pk": 1,
+    "fields": {
+      "bill": 1,
+      "name": "Milk",
+      "price": "4.50"
+    }
+  },
+  {
+    "model": "bills_new.billitem",
+    "pk": 2,
+    "fields": {
+      "bill": 1,
+      "name": "Bread",
+      "price": "3.00"
+    }
+  },
+  {
+    "model": "bills_new.billitem",
+    "pk": 3,
+    "fields": {
+      "bill": 1,
+      "name": "Eggs",
+      "price": "5.00"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 1,
+    "fields": {
+      "item": 1,
+      "person": 1,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 2,
+    "fields": {
+      "item": 1,
+      "person": 2,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 3,
+    "fields": {
+      "item": 1,
+      "person": 3,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 4,
+    "fields": {
+      "item": 2,
+      "person": 1,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 5,
+    "fields": {
+      "item": 2,
+      "person": 2,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 6,
+    "fields": {
+      "item": 3,
+      "person": 1,
+      "split_type": "EQUAL"
+    }
+  },
+  {
+    "model": "bills_new.itemshare",
+    "pk": 7,
+    "fields": {
+      "item": 3,
+      "person": 3,
+      "split_type": "EQUAL"
+    }
+  }
+]

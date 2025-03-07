@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bills List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f6fa;
+        }
+        .bill-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bill-info {
+            flex-grow: 1;
+        }
+        .bill-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .bill-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .bill-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-left: 20px;
+        }
+        .view-button {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .view-button:hover {
+            background-color: #2980b9;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .no-bills {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Bills</h1>
+        <a href="{% url 'bill_list' %}" class="view-button">Refresh</a>
+    </div>
+
+    {% if bills %}
+        {% for bill in bills %}
+            <div class="bill-card">
+                <div class="bill-info">
+                    <div class="bill-title">{{ bill.title }}</div>
+                    <div class="bill-meta">
+                        Date: {{ bill.date }} | Created by: {{ bill.created_by }}
+                        {% if bill.group %}
+                        | Group: {{ bill.group.name }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="bill-amount">${{ bill.total_amount }}</div>
+                <a href="{% url 'bill_detail' bill.id %}" class="view-button">View Details</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-bills">
+            <h2>No bills found</h2>
+            <p>There are no bills in the system yet.</p>
+        </div>
+    {% endif %}
+</body>
+</html>

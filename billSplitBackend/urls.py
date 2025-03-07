@@ -21,6 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('bills.urls')),
+    path('api/new/', include('bills_new.urls')),  # Added new bills_new API under /api/new/ endpoint
     path('api/', include('llm.urls')),
     path('', include('dashboards.urls')),
     path('api/', include('tasks.urls')),

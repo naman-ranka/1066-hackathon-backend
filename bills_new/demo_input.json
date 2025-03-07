@@ -1,0 +1,99 @@
+{
+    "bill": {
+      "title": "Dinner at Italian Restaurant",
+      "description": "Team dinner after project completion",
+      "date": "2025-03-06"
+    },
+    "bill_total": 120.00,
+    "group_id": 1,
+    "persons": [1, 2, 3],
+    "items": [
+      {
+        "name": "Margherita Pizza",
+        "price": 20.00,
+        "shares": [
+          {
+            "person_id": 1,
+            "split_type": "EQUAL"
+          },
+          {
+            "person_id": 2,
+            "split_type": "EQUAL"
+          }
+        ]
+      },
+      {
+        "name": "Lasagna",
+        "price": 25.00,
+        "shares": [
+          {
+            "person_id": 3,
+            "split_type": "EXACT",
+            "exact_amount": 25.00
+          }
+        ]
+      },
+      {
+        "name": "Wine Bottle",
+        "price": 45.00,
+        "shares": [
+          {
+            "person_id": 1,
+            "split_type": "PERCENTAGE",
+            "percentage": 40.00
+          },
+          {
+            "person_id": 2,
+            "split_type": "PERCENTAGE",
+            "percentage": 30.00
+          },
+          {
+            "person_id": 3,
+            "split_type": "PERCENTAGE",
+            "percentage": 30.00
+          }
+        ]
+      },
+      {
+        "name": "Appetizer Platter",
+        "price": 30.00,
+        "shares": [
+          {
+            "person_id": 1,
+            "split_type": "SHARES",
+            "share_units": 2
+          },
+          {
+            "person_id": 2,
+            "split_type": "SHARES",
+            "share_units": 3
+          },
+          {
+            "person_id": 3,
+            "split_type": "SHARES",
+            "share_units": 1
+          }
+        ]
+      }
+    ],
+    "bill_paid_by": [
+      {
+        "person_id": 1,
+        "amount": 120.00
+      }
+    ],
+    "bill_participants_share": [
+      {
+        "person_id": 1,
+        "owed_amount": 38.00
+      },
+      {
+        "person_id": 2,
+        "owed_amount": 38.50
+      },
+      {
+        "person_id": 3,
+        "owed_amount": 43.50
+      }
+    ]
+  }
