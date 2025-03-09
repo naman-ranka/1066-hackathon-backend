@@ -1,0 +1,417 @@
+{% extends 'bills_new/base.html' %}
+{% load my_filters %}
+
+{% block title %}{{ person.user.username }}'s Balance Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ person.user.username }}'s Balance Dashboard</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h3 class="mb-0">Overall Balance</h3>
+                            <h2 class="{% if overall_balance > 0 %}text-success{% elif overall_balance < 0 %}text-danger{% endif %}">
+                                {% if overall_balance > 0 %}
+                                    +${{ overall_balance|floatformat:2 }}
+                                {% elif overall_balance < 0 %}
+                                    -${{ overall_balance|abs|floatformat:2 }}
+                                {% else %}
+                                    $0.00
+                                {% endif %}
+                            </h2>
+                            <p class="text-muted">
+                                {% if overall_balance > 0 %}
+                                    You are owed money
+                                {% elif overall_balance < 0 %}
+                                    You owe money
+                                {% else %}
+                                    All settled up!
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3 class="mb-0">Total Paid</h3>
+                            <h2 class="text-primary">${{ total_paid|floatformat:2 }}</h2>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3 class="mb-0">Total Owed</h3>
+                            <h2 class="text-info">${{ total_owed|floatformat:2 }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Toggle Tabs -->
+    <ul class="nav nav-tabs mb-4" id="balanceViewTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="bill-tab" data-bs-toggle="tab" data-bs-target="#bill-view" type="button" role="tab" aria-controls="bill-view" aria-selected="true">Bill View</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="item-tab" data-bs-toggle="tab" data-bs-target="#item-view" type="button" role="tab" aria-controls="item-view" aria-selected="false">Item View</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment-view" type="button" role="tab" aria-controls="payment-view" aria-selected="false">Payments</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="settlement-tab" data-bs-toggle="tab" data-bs-target="#settlement-view" type="button" role="tab" aria-controls="settlement-view" aria-selected="false">Settlements</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="balanceViewContent">
+        <!-- Bill View Tab -->
+        <div class="tab-pane fade show active" id="bill-view" role="tabpanel" aria-labelledby="bill-tab">
+            <h2 class="mb-3">Bill Summary</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Bill</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Your Share</th>
+                            <th>You Paid</th>
+                            <th>Balance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for participation in bill_participations %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'bill_detail' participation.bill.id %}">
+                                    {{ participation.bill.title }}
+                                </a>
+                            </td>
+                            <td>{{ participation.bill.date|date:"M d, Y" }}</td>
+                            <td>${{ participation.bill.total_amount|floatformat:2 }}</td>
+                            <td>${{ participation.owed_amount|floatformat:2 }}</td>
+                            <td>${{ participation.paid_amount|floatformat:2 }}</td>
+                            <td class="{% if participation.balance > 0 %}text-success{% elif participation.balance < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                {% if participation.balance > 0 %}
+                                    +${{ participation.balance|floatformat:2 }}
+                                {% elif participation.balance < 0 %}
+                                    -${{ participation.balance|abs|floatformat:2 }}
+                                {% else %}
+                                    $0.00
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info" data-bs-toggle="collapse" data-bs-target="#details-{{ participation.id }}">
+                                    Details
+                                </button>
+                                {% if participation.balance < 0 %}
+                                    Pay
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="details-{{ participation.id }}">
+                            <td colspan="7" class="p-0">
+                                <div class="card card-body m-2">
+                                    <h5>Bill Items</h5>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Price</th>
+                                                <th>Split Type</th>
+                                                <th>Your Share</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for share in participation.bill_items %}
+                                            <tr>
+                                                <td>{{ share.item.name }}</td>
+                                                <td>${{ share.item.price|floatformat:2 }}</td>
+                                                <td>
+                                                    {{ share.get_split_type_display }}
+                                                    {% if share.split_type == 'PERCENTAGE' %}
+                                                        ({{ share.percentage }}%)
+                                                    {% elif share.split_type == 'SHARES' %}
+                                                        ({{ share.share_units }} of {{ share.item.shares_total_units }} shares)
+                                                    {% endif %}
+                                                </td>
+                                                <td>${{ share.share_amount|floatformat:2 }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    
+                                    <h5 class="mt-3">Payments</h5>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Amount</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for payment in participation.payments %}
+                                            <tr>
+                                                <td>{{ payment.date|date:"M d, Y" }}</td>
+                                                <td>${{ payment.amount|floatformat:2 }}</td>
+                                                <td>{{ payment.description|default:"No description" }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">No payments yet</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">You haven't participated in any bills yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Item View Tab -->
+        <div class="tab-pane fade" id="item-view" role="tabpanel" aria-labelledby="item-tab">
+            <h2 class="mb-3">Item Breakdown</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Bill</th>
+                            <th>Item</th>
+                            <th>Date</th>
+                            <th>Item Price</th>
+                            <th>Split Type</th>
+                            <th>Your Share</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for share in item_shares %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'bill_detail' share.item.bill.id %}">
+                                    {{ share.item.bill.title }}
+                                </a>
+                            </td>
+                            <td>{{ share.item.name }}</td>
+                            <td>{{ share.item.bill.date|date:"M d, Y" }}</td>
+                            <td>${{ share.item.price|floatformat:2 }}</td>
+                            <td>
+                                {{ share.get_split_type_display }}
+                                {% if share.split_type == 'PERCENTAGE' %}
+                                    ({{ share.percentage }}%)
+                                {% elif share.split_type == 'SHARES' %}
+                                    ({{ share.share_units }} shares)
+                                {% endif %}
+                            </td>
+                            <td>${{ share.share_amount|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No item shares found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payments View Tab -->
+        <div class="tab-pane fade" id="payment-view" role="tabpanel" aria-labelledby="payment-tab">
+            <h2 class="mb-3">Your Payments</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Bill</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in bill_payments %}
+                        <tr>
+                            <td>{{ payment.date|date:"M d, Y" }}</td>
+                            <td>{{ payment.get_payment_type_display }}</td>
+                            <td>
+                                {% if payment.bill %}
+                                <a href="{% url 'bill_detail' payment.bill.id %}">
+                                    {{ payment.bill.title }}
+                                </a>
+                                {% else %}
+                                N/A
+                                {% endif %}
+                            </td>
+                            <td>${{ payment.amount|floatformat:2 }}</td>
+                            <td>{{ payment.description|default:"No description" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No bill payments found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settlements View Tab -->
+        <div class="tab-pane fade" id="settlement-view" role="tabpanel" aria-labelledby="settlement-tab">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h2>People Who Owe You</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Person</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for balance in person_balances %}
+                                {% if balance.balance < 0 %}
+                                <tr>
+                                    <td>{{ balance.person.user.username }}</td>
+                                    <td class="text-success">${{ balance.balance|abs|floatformat:2 }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" data-bs-toggle="collapse" data-bs-target="#settlement-details-{{ balance.person.id }}">
+                                            Transactions
+                                        </button>
+                                            Mark as Settled
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr class="collapse" id="settlement-details-{{ balance.person.id }}">
+                                    <td colspan="3" class="p-0">
+                                        <div class="card card-body m-2">
+                                            <h5>Transaction History</h5>
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Amount</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for settlement in balance.settlements %}
+                                                    <tr>
+                                                        <td>{{ settlement.date|date:"M d, Y" }}</td>
+                                                        <td class="{% if settlement.amount > 0 %}text-danger{% else %}text-success{% endif %}">
+                                                            {% if settlement.amount > 0 %}
+                                                                -${{ settlement.amount|floatformat:2 }}
+                                                            {% else %}
+                                                                +${{ settlement.amount|abs|floatformat:2 }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ settlement.description|default:"No description" }}</td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted">No settlement history</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Nobody owes you money.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h2>People You Owe</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Person</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for balance in person_balances %}
+                                {% if balance.balance > 0 %}
+                                <tr>
+                                    <td>{{ balance.person.user.username }}</td>
+                                    <td class="text-danger">${{ balance.balance|floatformat:2 }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" data-bs-toggle="collapse" data-bs-target="#settlement-details-owe-{{ balance.person.id }}">
+                                            Transactions
+                                        </button>
+                                            Pay Now
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr class="collapse" id="settlement-details-owe-{{ balance.person.id }}">
+                                    <td colspan="3" class="p-0">
+                                        <div class="card card-body m-2">
+                                            <h5>Transaction History</h5>
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Amount</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for settlement in balance.settlements %}
+                                                    <tr>
+                                                        <td>{{ settlement.date|date:"M d, Y" }}</td>
+                                                        <td class="{% if settlement.amount > 0 %}text-danger{% else %}text-success{% endif %}">
+                                                            {% if settlement.amount > 0 %}
+                                                                -${{ settlement.amount|floatformat:2 }}
+                                                            {% else %}
+                                                                +${{ settlement.amount|abs|floatformat:2 }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ settlement.description|default:"No description" }}</td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted">No settlement history</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">You don't owe anyone money.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
