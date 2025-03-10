@@ -20,6 +20,8 @@ class ProcessReceiptView(APIView):
         try:
             image_data = request.FILES["file"].read()
             bill_content = process_receipt_with_gemini(image_data)
+            #print(bill_content)
+            print("bill_content: ", bill_content)
             return Response(
                 {"bill": bill_content}, 
                 status=status.HTTP_200_OK
