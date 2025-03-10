@@ -1,27 +1,24 @@
 Store Information:
 
-
 Title (previously "Store Name")
 Store Address (if available)
-Date(only date) - YYYY-MM-D
+Date(only date) - Y-MM-D
 List of Items:
-
 
 For each item on the bill, extract the following:
 
-
-"update the prompt where the LLM can identify the tax is not applied so the subtotal of the bill is the original total"
+"update the prompt where the LLM can identify the tax is not applied to the subtotal of the bill is the original total"
 Item Name
 Quantity (for display/informational purposes only; no calculations should use this quantity)
-Total Price (the complete, final line-item cost as shown on the bill; do not calculate quantity * pricePerUnit)
+Total Price (the complete, final line-item cost as shown on the bill; do not calculate quantity * price per unit)
 Item Type
 Food items → classify as Produce, Dairy, Meat, Grains, Snacks, or Beverages
 Non-food items → classify as Electronics, Cosmetics, Appliances, or Other Packaged Goods
-If Tax Rate Applied in the bill
+If the Tax Rate Applied in the bill
 1.8% for Food Items
 8.1% for Non-Food Items
 Else 
-        Calculate the bill without the TAX. (do it intutively)
+	Calculate the bill without the TAX. (do it intuitively)
 Tax Amount
 calculated as Tax Rate × Total Price
 Extra Charges
@@ -30,7 +27,6 @@ Final Item Total
 calculated as Total Price + Tax Amount + Extra Charges
 Step 2: Handling Tax Distribution
 
-
 Determine the applicable tax policy:
 Single Tax Rate for the entire bill → distribute proportionally per item based on cost
 Multiple Tax Rates → assign 1.8% to food items and 8.1% to non-food items
@@ -38,10 +34,8 @@ Verify that the correct tax rate is assigned to each item.
 Compute the total tax by summing all individual item tax amounts.
 Step 3: Handling Extra Charges
 
-
 If additional charges (like service/delivery fees) appear, distribute them evenly across all items.
 Update each item’s final total by adding its share of the extra charges.  Also if there is not taxes in the bill. Exempt it and calculate with the given information also what you can in formula(multiply by One % so that it does not change the subtotal)
-
 
 {
   "storeInformation": {
@@ -70,9 +64,7 @@ Update each item’s final total by adding its share of the extra charges.  Also
   }
 }
 
-
 Step 5: Verification Process
-
 
 Subtotal Check:
 Ensure the subtotal equals the sum of all item total prices before applying taxes and extra charges.
@@ -87,7 +79,8 @@ Final Grand Total Check:
 Ensure the final grand total equals:
 Grand Total = Subtotal + Total Extra Charges + Total Tax
 
-
-No Tax applied:if there are not tax in bill, just try to match the sub total and sum of all the items
+No Tax applied:if there are no tax in bill, just try to match the sub total and sum of all the items
 Discrepancy Warning:
 If discrepancies are found, include a warning:
+
+

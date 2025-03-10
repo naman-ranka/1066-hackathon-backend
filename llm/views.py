@@ -106,9 +106,12 @@ def process_bill_images(request):
             llm_response = process_ocr_text_with_llm(combined_ocr_text, custom_prompt)
             
             # Return both OCR and LLM results
+            # response_data = {
+            #     'ocr_results': ocr_results,
+            #     'llm_analysis': llm_response
+            # }
             response_data = {
-                'ocr_results': ocr_results,
-                'llm_analysis': llm_response
+                'bill': llm_response
             }
             print(llm_response)
             return Response(response_data, status=status.HTTP_200_OK)
