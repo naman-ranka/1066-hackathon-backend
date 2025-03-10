@@ -521,3 +521,76 @@ def process_images_bytes(image_bytes_list: List[bytes], provider: OCRProvider = 
         return process_images_with_google_vision_bytes(image_bytes_list)
     else:
         raise ValueError(f"Unsupported OCR provider: {provider}")
+
+def process_ocr_text_with_llm(ocr_text: str, custom_prompt: Optional[str] = None) -> str:
+    """
+    Process OCR text with LLM (Gemini) by combining it with a prompt.
+    
+    Args:
+        ocr_text: The text extracted from OCR
+        custom_prompt: Optional custom prompt to use instead of the default prompt
+        
+    Returns:
+        String response from the LLM containing structured data
+        
+    Raises:
+        ValueError: If API key is not set or text is empty
+        RuntimeError: If LLM API call fails
+    """
+    if not ocr_text:
+        logger.error("No OCR text provided")
+        raise ValueError("No OCR text provided for processing")
+
+    # Get the Gemini API key
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        logger.error("GEMINI_API_KEY is not set in environment variables")
+        raise ValueError("GEMINI_API_KEY is not set in environment variables.")
+
+    # Get prompt (either custom or from file)
+    try:
+        base_prompt = custom_prompt if custom_prompt else read_prompt_file()
+        # Combine prompt with OCR text
+        combined_prompt = f"{base_prompt}\n\nHere is the extracted text from the receipt:\n{ocr_text}"
+    except Exception as e:
+        logger.error(f"Error preparing prompt: {str(e)}")
+        raise ValueError(f"Error preparing prompt: {str(e)}")
+
+    # Configure Gemini
+    try:
+        genai.configure(api_key=api_key)
+    except Exception as e:
+        logger.error(f"Error configuring Gemini: {str(e)}")
+        raise RuntimeError(f"Error configuring Gemini: {str(e)}")
+
+    # Create a GenerativeModel with desired settings
+    generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 40,
+        "max_output_tokens": 8192,
+    }
+    
+    try:
+        model = genai.GenerativeModel(
+            model_name=GEMINI_MODEL,
+            generation_config=generation_config,
+        )
+    except Exception as e:
+        logger.error(f"Error creating Gemini model: {str(e)}")
+        raise RuntimeError(f"Error creating Gemini model: {str(e)}")
+
+    # Call the model with the combined prompt
+    try:
+        response = model.generate_content(combined_prompt)
+    except Exception as e:
+        logger.error(f"Gemini API error: {str(e)}")
+        traceback.print_exc()
+        raise RuntimeError(f"Gemini API error during generate_content call: {str(e)}")
+
+    # Validate the response
+    if not response or not response.text:
+        logger.error("Gemini returned empty response")
+        raise RuntimeError("Gemini returned empty response")
+
+    return response.text
