@@ -128,20 +128,13 @@ def process_bill_images(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Create temporary file
-            temp = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
-            # Save the file content
-            image = Image.open(io.BytesIO(file.read()))
-            image.save(temp.name)
-            temp_files.append(temp.name)
+            # Convert uploaded file to bytes
+            image_bytes = io.BytesIO(file.read())
+            images_base64.append(base64.b64encode(image_bytes.getvalue()).decode('utf-8'))
 
-        # Process images
-        results = process_images(temp_files, provider)
+        # Process images directly using base64 encoded strings
+        results = process_images(images_base64, provider)
 
-        # Clean up temporary files
-        for temp_file in temp_files:
-            os.unlink(temp_file)
-        
         # Save results to file
         output_path = os.path.join(settings.BASE_DIR, 'ocr-result.json')
         save_ocr_results(results, output_path)
