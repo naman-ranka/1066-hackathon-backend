@@ -13,9 +13,11 @@ Total Price (the complete, final line-item cost as shown on the bill; do not cal
 Item Type
 Food items → classify as Produce, Dairy, Meat, Grains, Snacks, or Beverages
 Non-food items → classify as Electronics, Cosmetics, Appliances, or Other Packaged Goods
-Tax Rate Applied
+If Tax Rate Applied in the bill
 1.8% for Food Items
 8.1% for Non-Food Items
+Else 
+	Calculate the bill without the TAX. (do it intutively)
 Tax Amount
 calculated as Tax Rate × Total Price
 Extra Charges
@@ -32,33 +34,33 @@ Compute the total tax by summing all individual item tax amounts.
 Step 3: Handling Extra Charges
 
 If additional charges (like service/delivery fees) appear, distribute them evenly across all items.
-Update each item’s final total by adding its share of the extra charges.
+Update each item’s final total by adding its share of the extra charges.  Also if there is not taxes in the bill. Exempt it and calculate with the given information also what you can in formula(multiply by One % so that it does not change the subtotal)
 
 {
-"storeInformation": {
-"title": "",
-"storeAddress": "",
-"dateTimeOfPurchase": ""  // in YYYY-MM-DD format
-},
-"items": [
-{
-"name": "",
-"quantity": 0,
-"totalPrice": 0.0,
-"itemType": "",
-"tax%": 0.0,
-"taxAmount": 0.0,
-"itemTotalAfterTax": 0.0
-}
-// ... more items ...
-],
-"subtotalBeforeChargesAndTaxes": 0.0,
-"totalExtraChargesDistributed": 0.0,
-"taxOnFood": 0.0, // for food items
-"grandTotal": 0.0,
-"paymentDetails": {
-"paymentMethod": "" // e.g., Cash, Credit Card, Debit Card, etc.
-}
+  "storeInformation": {
+    "title": "",
+    "storeAddress": "",
+    "dateTimeOfPurchase": ""  // in YYYY-MM-DD format
+  },
+  "items": [
+    {
+      "name": "",
+      "quantity": 0,
+      "totalPrice": 0.0,
+      "itemType": "",
+      "tax": 0.0,  //in percent
+      "taxAmount": 0.0,
+      "itemTotalAfterTax": 0.0
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 0.0,
+  "totalExtraChargesDistributed": 0.0,
+  "taxOnFood": 0.0, // for food items
+  "grandTotal": 0.0,
+  "paymentDetails": {
+    "paymentMethod": "" // e.g., Cash, Credit Card, Debit Card, etc.
+  }
 }
 
 Step 5: Verification Process
