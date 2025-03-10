@@ -2,6 +2,9 @@ import pytesseract
 from PIL import Image
 import os
 
+# Set tesseract path for Linux - it's already in the system PATH
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+
 def get_ocr_text_from_multiple_images(image_paths):
     """
     Performs OCR on a list of images and combines the extracted text.
@@ -27,20 +30,7 @@ def get_ocr_text_from_multiple_images(image_paths):
     return combined_text
 
 if __name__ == "__main__":
-    # --- Configuration ---
-    # 1. **Install Tesseract OCR:**
-    #    - Follow instructions for your operating system (e.g., `apt install tesseract-ocr` on Ubuntu,
-    #      or download from Tesseract website for Windows/Mac).
-    # 2. **Install pytesseract (Python library):**
-    #    - `pip install pytesseract Pillow`
-
-    # 3. **Set Tesseract path (if not in your system PATH)**:
-    #    - Uncomment and modify the line below if pytesseract can't find Tesseract executable.
-    #      Replace with the actual path to your tesseract.exe (Windows example).
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-
-    # --- Example Usage ---
+    # Example Usage
     image_file_paths = [
         "test_images/1.jpeg",
         "test_images/2.jpeg",
@@ -49,16 +39,8 @@ if __name__ == "__main__":
         "test_images/5.jpeg",
         "test_images/6.jpeg",
         "test_images/7.jpeg",
-        "test_images/8.jpeg"]
-        
-
-    # Create dummy image files for testing if you don't have any ready
-    # (You'd typically get these from user input or a folder)
-    for file_path in image_file_paths:
-        if not os.path.exists(file_path):
-            print(f"Warning: '{file_path}' not found. Please replace with actual image paths.")
-            # You could create empty files or placeholder images for testing.
-
+        "test_images/8.jpeg"
+    ]
 
     combined_ocr_output = get_ocr_text_from_multiple_images(image_file_paths)
 

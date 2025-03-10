@@ -187,6 +187,13 @@ if DEBUG:
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
+if not OPENAI_API_KEY or not GEMINI_API_KEY:
+    print("Warning: API keys not found in environment variables")
+    # For development only, you can set default API keys here
+    if DEBUG:
+        OPENAI_API_KEY = OPENAI_API_KEY or "your-openai-api-key-here"
+        GEMINI_API_KEY = GEMINI_API_KEY or "your-gemini-api-key-here"
+
 # Cache settings
 CACHES = {
     'default': {
@@ -194,6 +201,11 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+# Google Cloud Vision API Settings
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+if not GOOGLE_APPLICATION_CREDENTIALS:
+    raise Exception("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set")
 
 # Include logging configuration from logging_config.py
 # LOGGING is imported at the top of this file

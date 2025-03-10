@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Bill Image Upload</title>
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .form-group { margin-bottom: 15px; }
+        #result { margin-top: 20px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h2>Test Bill Image Upload</h2>
+    <form id="uploadForm">
+        <div class="form-group">
+            <label for="images">Select Images:</label>
+            <input type="file" id="images" name="files[]" multiple accept="image/*">
+        </div>
+        <div class="form-group">
+            <label for="provider">OCR Provider:</label>
+            <select id="provider" name="provider">
+                <option value="google_cloud">Google Cloud Vision</option>
+                <option value="tesseract">Tesseract</option>
+            </select>
+        </div>
+        <button type="submit">Upload and Process</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const files = document.getElementById('images').files;
+            const provider = document.getElementById('provider').value;
+            
+            for (let file of files) {
+                formData.append('files[]', file);
+            }
+            formData.append('provider', provider);
+
+            try {
+                const response = await fetch('/api/llm/process-bill-images/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
+        };
+    </script>
+</body>
+</html>

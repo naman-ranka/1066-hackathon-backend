@@ -1,0 +1,1122 @@
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/1.jpeg:
+6:43
+<
+Feb 23, 2025 order
+Request cancellation
+Payment method
+VISA Ending in 9668
+44%
+$10.51
+Subtotal
+$94.03
+Savings
+-$5.03
+$89.00
+w+ Free delivery from store
+$9.95 $0
+Tax
+$1.61
+Driver tip
+$0.00
+Total
+$90.61
+Charge history
+Your transaction activity for this order
+Order# 2000127-29633572
+6:43
+<
+Feb
+23
+,
+2025
+order
+Request
+cancellation
+Payment
+method
+VISA
+Ending
+in
+9668
+44
+%
+$
+10.51
+Subtotal
+$
+94.03
+Savings
+-
+$
+5.03
+$
+89.00
+w
++
+Free
+delivery
+from
+store
+$
+9.95
+$
+0
+Tax
+$
+1.61
+Driver
+tip
+$
+0.00
+Total
+$
+90.61
+Charge
+history
+Your
+transaction
+activity
+for
+this
+order
+Order
+#
+2000127-29633572
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/2.jpeg:
+6:43
+<
+Feb 23, 2025 order
+44%
+$10.51
+Navitas Naturals
+Organic Raw Chia
+$6.99
+$9.89
+NAVITAS
+Seeds, 8 Ounce
+CHIA
+$6.99/ea
+Qty 1
+$2.90 from savings
+Contact Seller to ask about your order
+Request cancellation
+Payment method
+VISA Ending in 9668
+Subtotal
+$94.03
+Savings
+-$5.03
+$89.00
+W+ Free delivery from store
+$9.95 $0
+Tax
+$1.61
+Driver tip
+$0.00
+Total
+$90.61
+6:43
+<
+Feb
+23
+,
+2025
+order
+44
+%
+$
+10.51
+Navitas
+Naturals
+Organic
+Raw
+Chia
+$
+6.99
+$
+9.89
+NAVITAS
+Seeds
+,
+8
+Ounce
+CHIA
+$
+6.99
+/
+ea
+Qty
+1
+$
+2.90
+from
+savings
+Contact
+Seller
+to
+ask
+about
+your
+order
+Request
+cancellation
+Payment
+method
+VISA
+Ending
+in
+9668
+Subtotal
+$
+94.03
+Savings
+-
+$
+5.03
+$
+89.00
+W
++
+Free
+delivery
+from
+store
+$
+9.95
+$
+0
+Tax
+$
+1.61
+Driver
+tip
+$
+0.00
+Total
+$
+90.61
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/3.jpeg:
+6:43
+Feb 23, 2025 order
+all44%
+to
+5
+Pussel
+POTATOES
+$10.51
+Freshness Guaranteed
+$1.00
+Sliced Italian Bread, 14
+$1.47
+OZ
+7.1c/oz
+Qty 1
+$0.47 from savings
+Ordered price $1.00
+Fresh Strawberries, 1 lb
+$2.76
+Container
+17.3c/oz
+Qty 1
+Fresh Cilantro, Bunch
+14.3¢/oz
+Qty 2
+Fresh Whole Russet
+Potatoes, 5lb bag
+63.6¢/lb
+Qty 1
+More from this order
+О
+$1.14
+$0.57 ea
+$3.18
+6:43
+Feb
+23
+,
+2025
+order
+all44
+%
+to
+5
+Pussel
+POTATOES
+$
+10.51
+Freshness
+Guaranteed
+$
+1.00
+Sliced
+Italian
+Bread
+,
+14
+$
+1.47
+OZ
+7.1c
+/
+oz
+Qty
+1
+$
+0.47
+from
+savings
+Ordered
+price
+$
+1.00
+Fresh
+Strawberries
+,
+1
+lb
+$
+2.76
+Container
+17.3c
+/
+oz
+Qty
+1
+Fresh
+Cilantro
+,
+Bunch
+14.3
+¢
+/
+oz
+Qty
+2
+Fresh
+Whole
+Russet
+Potatoes
+,
+5lb
+bag
+63.6
+¢
+/
+lb
+Qty
+1
+More
+from
+this
+order
+О
+$
+1.14
+$
+0.57
+ea
+$
+3.18
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/4.jpeg:
+6:43
+Feb 23, 2025 order
+6E
+44%
+ピ
+$10.51
+|||
+Fresh Roma Tomato, 2
+lb Bag
+94.0¢/lb
+Qty 3
+Fresh Green Bell
+Pepper, Each
+72.0¢/ea
+Qty 4
+Freshness Guaranteed
+Italian Garlic Herb
+Bread, 14 oz (Shelf
+Stable/Regular)
+10.5¢/oz
+Qty 1
+$0.31 from savings
+Ordered price $1.47
+Fresh Mini Cucumbers,
+16 oz
+13.5c/oz
+Qty 2
+Freshness Guaranteed
+Sliced Italian Bread, 14
+OZ
+7.1c/oz
+Otu 1
+О
+$5.64
+$1.88 ea
+$2.88
+$0.72 ea
+$1.47
+$1.78
+$4.32
+$2.16 ea
+$1.00
+$1.47
+6:43
+Feb
+23
+,
+2025
+order
+6E
+44
+%
+ピ
+$
+10.51
+|||
+Fresh
+Roma
+Tomato
+,
+2
+lb
+Bag
+94.0
+¢
+/
+lb
+Qty
+3
+Fresh
+Green
+Bell
+Pepper
+,
+Each
+72.0
+¢
+/
+ea
+Qty
+4
+Freshness
+Guaranteed
+Italian
+Garlic
+Herb
+Bread
+,
+14
+oz
+(
+Shelf
+Stable
+/
+Regular
+)
+10.5
+¢
+/
+oz
+Qty
+1
+$
+0.31
+from
+savings
+Ordered
+price
+$
+1.47
+Fresh
+Mini
+Cucumbers
+,
+16
+oz
+13.5c
+/
+oz
+Qty
+2
+Freshness
+Guaranteed
+Sliced
+Italian
+Bread
+,
+14
+OZ
+7.1c
+/
+oz
+Otu
+1
+О
+$
+5.64
+$
+1.88
+ea
+$
+2.88
+$
+0.72
+ea
+$
+1.47
+$
+1.78
+$
+4.32
+$
+2.16
+ea
+$
+1.00
+$
+1.47
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/5.jpeg:
+6:43
+Feb 23, 2025 order
+44%
+ピ
+SPINACH
+Marketside Fresh
+Spinach, 10 oz Bag,
+Fresh
+19.8c/oz
+Qty 1
+Great
+Butter
+Salted
+FERRERO
+RONDNOIR
+8
+|||
+Great Value Sweet
+Cream Salted Butter
+Twin Pack, 16 oz Box, 8
+Sticks, Slow Churned,
+Refrigerated
+23.9c/oz
+Qty 1
+Great Value Singles
+Pasteurized Prepared
+Sliced White American
+Cheese, 16 oz, 24 Count
+15.5¢/oz
+Qty 1
+Rondnoir Dark
+Chocolate and
+Hazelnut Praline Candy,
+8-Piece Stand-Up
+Bag, 2.7oz - Luxurious
+Treats for Snacking or
+Sharing
+Multipack
+Quantity: 1
+$1.47/oz
+Qty 1
+О
+$10.51
+$1.98
+$7.64
+$2.48
+$3.96
+6:43
+Feb
+23
+,
+2025
+order
+44
+%
+ピ
+SPINACH
+Marketside
+Fresh
+Spinach
+,
+10
+oz
+Bag
+,
+Fresh
+19.8c
+/
+oz
+Qty
+1
+Great
+Butter
+Salted
+FERRERO
+RONDNOIR
+8
+|||
+Great
+Value
+Sweet
+Cream
+Salted
+Butter
+Twin
+Pack
+,
+16
+oz
+Box
+,
+8
+Sticks
+,
+Slow
+Churned
+,
+Refrigerated
+23.9c
+/
+oz
+Qty
+1
+Great
+Value
+Singles
+Pasteurized
+Prepared
+Sliced
+White
+American
+Cheese
+,
+16
+oz
+,
+24
+Count
+15.5
+¢
+/
+oz
+Qty
+1
+Rondnoir
+Dark
+Chocolate
+and
+Hazelnut
+Praline
+Candy
+,
+8
+-
+Piece
+Stand
+-
+Up
+Bag
+,
+2.7oz
+-
+Luxurious
+Treats
+for
+Snacking
+or
+Sharing
+Multipack
+Quantity
+:
+1
+$
+1.47
+/
+oz
+Qty
+1
+О
+$
+10.51
+$
+1.98
+$
+7.64
+$
+2.48
+$
+3.96
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/6.jpeg:
+6:43
+Feb 23, 2025 order
+Great Value Block
+Colby & Monterey Jack
+Cheese, 8 oz
+28.0¢/oz
+Qty 1
+44% الله
+ピ
+$10.51
+$2.24
+Great Value Finely
+$3.94
+Shredded Sharp
+$4.48
+Cheddar Cheese, 8 oz
+$1.97 ea
+24.6c/oz
+Qty 2
+$0.54 from savings
+Great Value
+Finely Shredded
+Low-Moisture
+Part-Skim Mozzarella
+Cheese, 8 oz Bag
+24.6¢/oz
+Qty 3
+$0.81 from savings
+$5.91
+$6.72
+$1.97 ea
+Great Value Basmati
+$3.92
+Rice, 2 lb
+Basmati
+Multipack
+|||
+Quantity: 1
+12.3¢/oz
+Qty 1
+Marketside Fresh
+<
+$1.98
+6:43
+Feb
+23
+,
+2025
+order
+Great
+Value
+Block
+Colby
+&
+Monterey
+Jack
+Cheese
+,
+8
+oz
+28.0
+¢
+/
+oz
+Qty
+1
+44
+%
+الله
+ピ
+$
+10.51
+$
+2.24
+Great
+Value
+Finely
+$
+3.94
+Shredded
+Sharp
+$
+4.48
+Cheddar
+Cheese
+,
+8
+oz
+$
+1.97
+ea
+24.6c
+/
+oz
+Qty
+2
+$
+0.54
+from
+savings
+Great
+Value
+Finely
+Shredded
+Low
+-
+Moisture
+Part
+-
+Skim
+Mozzarella
+Cheese
+,
+8
+oz
+Bag
+24.6
+¢
+/
+oz
+Qty
+3
+$
+0.81
+from
+savings
+$
+5.91
+$
+6.72
+$
+1.97
+ea
+Great
+Value
+Basmati
+$
+3.92
+Rice
+,
+2
+lb
+Basmati
+Multipack
+|||
+Quantity
+:
+1
+12.3
+¢
+/
+oz
+Qty
+1
+Marketside
+Fresh
+<
+$
+1.98
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/7.jpeg:
+6:42@
+< Feb 23, 2025 order
+Apartment
+We'll leave your order at the door
+1 weight-adjusted item
+23 shopped
+44% الله
+to
+$10.51
+Λ
+Fresh Jalapeno Pepper,
+$2.83
+Approx. 3-5 per 0.25
+Pound
+$1.12/lb
+Final weight 2.5 lbs
+Requested weight 2.0 lbs
+Cranberries
+Great Value Sweetened
+Dried Cranberries, 6 oz
+32.7¢/oz
+Qty 1
+|||
+Great Value Glazed
+Honey Buns, 10.5 oz, 6
+Count
+Multipack
+Quantity: 1
+18.9c/oz
+Qty 1
+О
+$1.96
+$1.98
+6
+:
+42
+@
+<
+Feb
+23
+,
+2025
+order
+Apartment
+We'll
+leave
+your
+order
+at
+the
+door
+1
+weight
+-
+adjusted
+item
+23
+shopped
+44
+%
+الله
+to
+$
+10.51
+Λ
+Fresh
+Jalapeno
+Pepper
+,
+$
+2.83
+Approx
+.
+3-5
+per
+0.25
+Pound
+$
+1.12
+/
+lb
+Final
+weight
+2.5
+lbs
+Requested
+weight
+2.0
+lbs
+Cranberries
+Great
+Value
+Sweetened
+Dried
+Cranberries
+,
+6
+oz
+32.7
+¢
+/
+oz
+Qty
+1
+|||
+Great
+Value
+Glazed
+Honey
+Buns
+,
+10.5
+oz
+,
+6
+Count
+Multipack
+Quantity
+:
+1
+18.9c
+/
+oz
+Qty
+1
+О
+$
+1.96
+$
+1.98
+
+Results for /home/maya/Splitguys_Backend/1066-hackathon-backend/test_images/8.jpeg:
+6:43
+<
+Feb 23, 2025 order
+Great
+Blueberries
+44% الله
+ピ
+$10.51
+Great Value
+$2.86
+Blueberries, 16 oz
+(Frozen)
+17.9c/oz
+Qty 1
+Great Value Greek Plain
+$3.54
+Nonfat Yogurt, 32 oz
+Great
+GREEK
+Tub
+11.1¢/oz
+Qty 1
+Great Value Block
+Sharp Cheddar Cheese,
+8 oz
+28.0¢/oz
+Qty 1
+24
+Kraft
+Singles
+16 AMERICAN
+OZ
+Kraft Singles American
+Cheese Slices, 24 Ct Pk
+30.4¢/oz
+Qty 1
+Natures
+O
+|||
+$2.24
+$4.86
+Nature's Own 100%
+Whole Wheat, Whole
+Wheat Bread, 20 oz
+Loaf, Shelf-Stable
+18.2¢/oz
+Qty 2
+$7.28
+$3.64 ea
+О
+6:43
+<
+Feb
+23
+,
+2025
+order
+Great
+Blueberries
+44
+%
+الله
+ピ
+$
+10.51
+Great
+Value
+$
+2.86
+Blueberries
+,
+16
+oz
+(
+Frozen
+)
+17.9c
+/
+oz
+Qty
+1
+Great
+Value
+Greek
+Plain
+$
+3.54
+Nonfat
+Yogurt
+,
+32
+oz
+Great
+GREEK
+Tub
+11.1
+¢
+/
+oz
+Qty
+1
+Great
+Value
+Block
+Sharp
+Cheddar
+Cheese
+,
+8
+oz
+28.0
+¢
+/
+oz
+Qty
+1
+24
+Kraft
+Singles
+16
+AMERICAN
+OZ
+Kraft
+Singles
+American
+Cheese
+Slices
+,
+24
+Ct
+Pk
+30.4
+¢
+/
+oz
+Qty
+1
+Natures
+O
+|||
+$
+2.24
+$
+4.86
+Nature's
+Own
+100
+%
+Whole
+Wheat
+,
+Whole
+Wheat
+Bread
+,
+20
+oz
+Loaf
+,
+Shelf
+-
+Stable
+18.2
+¢
+/
+oz
+Qty
+2
+$
+7.28
+$
+3.64
+ea
+О

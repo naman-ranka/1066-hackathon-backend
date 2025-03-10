@@ -1,0 +1,37 @@
+{
+  "provider": "google_cloud_vision",
+  "results": [
+    {
+      "image_path": "/tmp/tmptx36x5se.jpg",
+      "text": "6:43\n<\nFeb 23, 2025 order\nGreat\n44% الله\nピ\n$10.51\nGreat Value\n$2.86\nBlueberries, 16 oz\n(Frozen)\nBlueberries\n17.9c/oz\nQty 1\nGreat\nGREEK\nGreat Value Greek Plain\n$3.54\nNonfat Yogurt, 32 oz\nTub\n11.1¢/oz\nQty 1\nGreat Value Block\nSharp Cheddar Cheese,\n8 oz\n28.0¢/oz\nQty 1\n24\nSingles\n16 AMERICAN\nOZ\nKraft Singles American\nCheese Slices, 24 Ct Pk\n30.4¢/oz\nQty 1\nNatures\n|||\nNature's Own 100%\nWhole Wheat, Whole\nWheat Bread, 20 oz\nLoaf, Shelf-Stable\n18.2¢/oz\nQty 2\nО\n$2.24\n$4.86\n$7.28\n$3.64 ea"
+    },
+    {
+      "image_path": "/tmp/tmpjmaawcfc.jpg",
+      "text": "6:42 @\n< Feb 23, 2025 order\nApartment\nWe'll leave your order at the door\n1 weight-adjusted item\n23 shopped\n44% الله\nto\n$10.51\nΛ\nFresh Jalapeno Pepper,\n$2.83\nApprox. 3-5 per 0.25\nPound\n$1.12/lb\nFinal weight 2.5 lbs\nRequested weight 2.0 lbs\nCranberries\nGreat Value Sweetened\nDried Cranberries, 6 oz\n32.7¢/oz\nQty 1\n|||\nGreat Value Glazed\nHoney Buns, 10.5 oz, 6\nCount\nMultipack\nQuantity: 1\n18.9c/oz\nQty 1\nО\nΛ\n$1.96\n$1.98"
+    },
+    {
+      "image_path": "/tmp/tmpavvpcf3g.jpg",
+      "text": "6:43\n<\nFeb 23, 2025 order\nGreat Value Block\nColby & Monterey Jack\nCheese, 8 oz\n28.0¢/oz\nQty 1\n44% الله\nピ\n$10.51\n$2.24\nGreat Value Finely\n$3.94\nShredded Sharp\n$4.48\nCheddar Cheese, 8 oz\n$1.97 ea\n24.6c/oz\nQty 2\n$0.54 from savings\nGreat Value\nFinely Shredded\nLow-Moisture\nPart-Skim Mozzarella\nCheese, 8 oz Bag\n24.6¢/oz\nQty 3\n$0.81 from savings\n$5.91\n$6.72\n$1.97 ea\nGreat Value Basmati\n$3.92\nRice, 2 lb\nBasmati\nMultipack\n|||\nQuantity: 1\n12.3¢/oz\nQty 1\nMarketside Fresh\n<\n$1.98"
+    },
+    {
+      "image_path": "/tmp/tmpvw66dazt.jpg",
+      "text": "6:43\nGreat\nFeb 23, 2025 order\nButter\nSalted\nFERRERO\nRONDNOIR\n8\n|||\nMarketside Fresh\nSpinach, 10 oz Bag,\nFresh\n19.8c/oz\nQty 1\nGreat Value Sweet\nCream Salted Butter\nTwin Pack, 16 oz Box, 8\nSticks, Slow Churned,\nRefrigerated\n23.9c/oz\nQty 1\nGreat Value Singles\nPasteurized Prepared\nSliced White American\nCheese, 16 oz, 24 Count\n15.5c/oz\nQty 1\nRondnoir Dark\nChocolate and\nHazelnut Praline Candy,\n8-Piece Stand-Up\nBag, 2.7oz - Luxurious\nTreats for Snacking or\nSharing\nMultipack\nQuantity: 1\n$1.47/oz\nQty 1\nО\n44% الله\nピ\n$10.51\n$1.98\n$7.64\n$2.48\n$3.96"
+    },
+    {
+      "image_path": "/tmp/tmp6y4m9ybr.jpg",
+      "text": "6:43\nFeb 23, 2025 order\nGE\n|||\nFresh Roma Tomato, 2\nlb Bag\n94.0c/lb\nQty 3\nFresh Green Bell\nPepper, Each\n72.0¢/ea\nQty 4\nFreshness Guaranteed\nItalian Garlic Herb\nBread, 14 oz (Shelf\nStable/Regular)\n10.5¢/oz\nQty 1\n$0.31 from savings\nOrdered price $1.47\nFresh Mini Cucumbers,\n16 oz\n13.5c/oz\nQty 2\nFreshness Guaranteed\nSliced Italian Bread, 14\nOZ\n7.1c/oz\nOtv 1\nО\n44% الله\nピ\n$10.51\n$5.64\n$1.88 ea\n$2.88\n$0.72 ea\n$1.47\n$1.78\n$4.32\n$2.16 ea\n$1.00\n$1.47"
+    },
+    {
+      "image_path": "/tmp/tmpty__6p29.jpg",
+      "text": "6:43\n<\nFeb 23, 2025 order\n5\nAussel\nPOTATOES\nFreshness Guaranteed\nSliced Italian Bread, 14\nOZ\n7.1c/oz\nQty 1\n$0.47 from savings\nOrdered price $1.00\n44% الله\nto\n$10.51\n$1.00\n$1.47\nFresh Strawberries, 1 lb\n$2.76\nContainer\n17.3c/oz\nQty 1\nFresh Cilantro, Bunch\n14.3¢/oz\nQty 2\nFresh Whole Russet\nPotatoes, 5lb bag\n63.6¢/lb\nQty 1\n|||\nMore from this order\nО\n$1.14\n$0.57 ea\n$3.18"
+    },
+    {
+      "image_path": "/tmp/tmphz5h70s0.jpg",
+      "text": "6:43\n<\nFeb 23, 2025 order\nNavitas Naturals\nOrganic Raw Chia\nNAVITAS\nSeeds, 8 Ounce\nCHIA\n$6.99/ea\nOB\nQty 1\n$2.90 from savings\nContact Seller to ask about your order\nRequest cancellation\nPayment method\nVISA Ending in 9668\n44%\n$10.51\n$6.99\n$9.89\nSubtotal\n$94.03\nSavings\n-$5.03\n$89.00\nW+ Free delivery from store\n$9.95 $0\nTax\n$1.61\nDriver tip\n$0.00\nTotal\n$90.61"
+    },
+    {
+      "image_path": "/tmp/tmpkuk5a3wh.jpg",
+      "text": "6:43\n44%\n<\nFeb 23, 2025 order\nRequest cancellation\nPayment method\nVISA Ending in 9668\n$10.51\nSubtotal\n$94.03\nSavings\n-$5.03\n$89.00\nw+ Free delivery from store\n$9.95 $0\nTax\n$1.61\nDriver tip\n$0.00\nTotal\n$90.61\nCharge history\nYour transaction activity for this order\nOrder# 2000127-29633572"
+    }
+  ]
+}
