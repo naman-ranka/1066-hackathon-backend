@@ -9,6 +9,10 @@ import traceback
 import pytesseract
 from PIL import Image
 import io
+from google.cloud import vision
+from enum import Enum
+from pathlib import Path
+
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -280,3 +284,313 @@ for path in image_paths:
 result = process_multiple_images_ocr(image_list)
 print(result)
 """
+
+class OCRProvider(Enum):
+    TESSERACT = "tesseract"
+    GOOGLE_CLOUD = "google_cloud"
+
+def process_images_with_tesseract(image_paths: List[str]) -> Dict[str, Any]:
+    """
+    Process multiple images using Tesseract OCR and return structured data.
+    
+    Args:
+        image_paths: List of paths to the images
+        
+    Returns:
+        Dictionary containing extracted text and metadata
+    """
+    # Set tesseract path for Linux
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+    
+    combined_text = []
+    for image_path in image_paths:
+        try:
+            img = Image.open(image_path)
+            text = pytesseract.image_to_string(img)
+            combined_text.append({
+                'image_path': image_path,
+                'text': text.strip()
+            })
+        except Exception as e:
+            combined_text.append({
+                'image_path': image_path,
+                'error': str(e)
+            })
+    
+    return {
+        'provider': 'tesseract',
+        'results': combined_text
+    }
+
+def process_images_with_google_vision(image_paths: List[str]) -> Dict[str, Any]:
+    """
+    Process multiple images using Google Cloud Vision API and return structured data.
+    
+    Args:
+        image_paths: List of paths to the images
+        
+    Returns:
+        Dictionary containing extracted text and metadata
+    """
+    # Get the absolute path to the credentials file
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    CREDENTIALS_FILE = "coral-muse-452018-s2-171009389e4d.json"
+    CREDENTIALS_PATH = os.path.join(BASE_DIR, CREDENTIALS_FILE)
+
+    if not os.path.exists(CREDENTIALS_PATH):
+        raise FileNotFoundError(f"Google Cloud credentials file not found at: {CREDENTIALS_PATH}")
+
+    # Set credentials via absolute path
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(CREDENTIALS_PATH)
+    
+    # Initialize Google Cloud Vision client
+    client = vision.ImageAnnotatorClient()
+    
+    combined_text = []
+    for image_path in image_paths:
+        try:
+            with io.open(image_path, 'rb') as image_file:
+                content = image_file.read()
+            
+            image = vision.Image(content=content)
+            response = client.text_detection(image=image)
+            
+            if response.error.message:
+                combined_text.append({
+                    'image_path': image_path,
+                    'error': response.error.message
+                })
+                continue
+            
+            texts = response.text_annotations
+            if texts:
+                combined_text.append({
+                    'image_path': image_path,
+                    'text': texts[0].description.strip()
+                })
+            else:
+                combined_text.append({
+                    'image_path': image_path,
+                    'text': ''
+                })
+                
+        except Exception as e:
+            combined_text.append({
+                'image_path': image_path,
+                'error': str(e)
+            })
+    
+    return {
+        'provider': 'google_cloud_vision',
+        'results': combined_text
+    }
+
+def process_images(image_paths: List[str], provider: OCRProvider = OCRProvider.GOOGLE_CLOUD) -> Dict[str, Any]:
+    """
+    Process multiple images using the specified OCR provider.
+    
+    Args:
+        image_paths: List of paths to the images
+        provider: OCRProvider enum specifying which OCR service to use
+        
+    Returns:
+        Dictionary containing the OCR results
+    """
+    if not image_paths:
+        raise ValueError("No image paths provided")
+    
+    if provider == OCRProvider.TESSERACT:
+        return process_images_with_tesseract(image_paths)
+    elif provider == OCRProvider.GOOGLE_CLOUD:
+        return process_images_with_google_vision(image_paths)
+    else:
+        raise ValueError(f"Unsupported OCR provider: {provider}")
+
+def process_images_with_tesseract_bytes(image_bytes_list: List[bytes]) -> Dict[str, Any]:
+    """
+    Process multiple images using Tesseract OCR directly from bytes data.
+    
+    Args:
+        image_bytes_list: List of image data in bytes format
+        
+    Returns:
+        Dictionary containing extracted text and metadata
+    """
+    # Set tesseract path for Linux
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+    
+    combined_text = []
+    for idx, image_bytes in enumerate(image_bytes_list):
+        try:
+            # Create PIL Image directly from bytes
+            img = Image.open(io.BytesIO(image_bytes))
+            text = pytesseract.image_to_string(img)
+            combined_text.append({
+                'image_index': idx,
+                'text': text.strip()
+            })
+        except Exception as e:
+            combined_text.append({
+                'image_index': idx,
+                'error': str(e)
+            })
+    
+    return {
+        'provider': 'tesseract',
+        'results': combined_text
+    }
+
+def process_images_with_google_vision_bytes(image_bytes_list: List[bytes]) -> Dict[str, Any]:
+    """
+    Process multiple images using Google Cloud Vision API directly from bytes data.
+    
+    Args:
+        image_bytes_list: List of image data in bytes format
+        
+    Returns:
+        Dictionary containing extracted text and metadata
+    """
+    # Get the absolute path to the credentials file
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    CREDENTIALS_FILE = "coral-muse-452018-s2-171009389e4d.json"
+    CREDENTIALS_PATH = os.path.join(BASE_DIR, CREDENTIALS_FILE)
+
+    if not os.path.exists(CREDENTIALS_PATH):
+        raise FileNotFoundError(f"Google Cloud credentials file not found at: {CREDENTIALS_PATH}")
+
+    # Set credentials via absolute path
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(CREDENTIALS_PATH)
+    
+    # Initialize Google Cloud Vision client
+    client = vision.ImageAnnotatorClient()
+    
+    combined_text = []
+    for idx, image_bytes in enumerate(image_bytes_list):
+        try:
+            # Create vision Image directly from bytes
+            image = vision.Image(content=image_bytes)
+            response = client.text_detection(image=image)
+            
+            if response.error.message:
+                combined_text.append({
+                    'image_index': idx,
+                    'error': response.error.message
+                })
+                continue
+            
+            texts = response.text_annotations
+            if texts:
+                combined_text.append({
+                    'image_index': idx,
+                    'text': texts[0].description.strip()
+                })
+            else:
+                combined_text.append({
+                    'image_index': idx,
+                    'text': ''
+                })
+                
+        except Exception as e:
+            combined_text.append({
+                'image_index': idx,
+                'error': str(e)
+            })
+    
+    return {
+        'provider': 'google_cloud_vision',
+        'results': combined_text
+    }
+
+def process_images_bytes(image_bytes_list: List[bytes], provider: OCRProvider = OCRProvider.GOOGLE_CLOUD) -> Dict[str, Any]:
+    """
+    Process multiple images using the specified OCR provider directly from bytes data.
+    
+    Args:
+        image_bytes_list: List of image data in bytes format
+        provider: OCRProvider enum specifying which OCR service to use
+        
+    Returns:
+        Dictionary containing the OCR results
+    """
+    if not image_bytes_list:
+        raise ValueError("No image data provided")
+    
+    if provider == OCRProvider.TESSERACT:
+        return process_images_with_tesseract_bytes(image_bytes_list)
+    elif provider == OCRProvider.GOOGLE_CLOUD:
+        return process_images_with_google_vision_bytes(image_bytes_list)
+    else:
+        raise ValueError(f"Unsupported OCR provider: {provider}")
+
+def process_ocr_text_with_llm(ocr_text: str, custom_prompt: Optional[str] = None) -> str:
+    """
+    Process OCR text with LLM (Gemini) by combining it with a prompt.
+    
+    Args:
+        ocr_text: The text extracted from OCR
+        custom_prompt: Optional custom prompt to use instead of the default prompt
+        
+    Returns:
+        String response from the LLM containing structured data
+        
+    Raises:
+        ValueError: If API key is not set or text is empty
+        RuntimeError: If LLM API call fails
+    """
+    if not ocr_text:
+        logger.error("No OCR text provided")
+        raise ValueError("No OCR text provided for processing")
+
+    # Get the Gemini API key
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        logger.error("GEMINI_API_KEY is not set in environment variables")
+        raise ValueError("GEMINI_API_KEY is not set in environment variables.")
+
+    # Get prompt (either custom or from file)
+    try:
+        base_prompt = custom_prompt if custom_prompt else read_prompt_file()
+        # Combine prompt with OCR text
+        combined_prompt = f"{base_prompt}\n\nHere is the extracted text from the receipt:\n{ocr_text}"
+    except Exception as e:
+        logger.error(f"Error preparing prompt: {str(e)}")
+        raise ValueError(f"Error preparing prompt: {str(e)}")
+
+    # Configure Gemini
+    try:
+        genai.configure(api_key=api_key)
+    except Exception as e:
+        logger.error(f"Error configuring Gemini: {str(e)}")
+        raise RuntimeError(f"Error configuring Gemini: {str(e)}")
+
+    # Create a GenerativeModel with desired settings
+    generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 40,
+        "max_output_tokens": 8192,
+    }
+    
+    try:
+        model = genai.GenerativeModel(
+            model_name=GEMINI_MODEL,
+            generation_config=generation_config,
+        )
+    except Exception as e:
+        logger.error(f"Error creating Gemini model: {str(e)}")
+        raise RuntimeError(f"Error creating Gemini model: {str(e)}")
+
+    # Call the model with the combined prompt
+    try:
+        response = model.generate_content(combined_prompt)
+    except Exception as e:
+        logger.error(f"Gemini API error: {str(e)}")
+        traceback.print_exc()
+        raise RuntimeError(f"Gemini API error during generate_content call: {str(e)}")
+
+    # Validate the response
+    if not response or not response.text:
+        logger.error("Gemini returned empty response")
+        raise RuntimeError("Gemini returned empty response")
+
+    return response.text

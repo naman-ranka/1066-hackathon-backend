@@ -1,42 +1,37 @@
-Store Information:
+Input: An image of a shopping bill or receipt.
+Output: A structured JSON object with correctly extracted and verified data.
 
-Title (previously "Store Name")
-Store Address (if available)
-Date(only date) - YYYY-MM-D
-List of Items:
+Processing Instructions:
+Step 1: Extract Key Details
+Store Information
 
-For each item on the bill, extract the following:
+Store Name
+Store Address
+Store Contact (if available)
+Date and Time of Purchase
+List of Items with:
 
-"update the prompt where the LLM can identify the tax is not applied so the subtotal of the bill is the original total"
 Item Name
-Quantity (for display/informational purposes only; no calculations should use this quantity)
-Total Price (the complete, final line-item cost as shown on the bill; do not calculate quantity * pricePerUnit)
-Item Type
-Food items → classify as Produce, Dairy, Meat, Grains, Snacks, or Beverages
-Non-food items → classify as Electronics, Cosmetics, Appliances, or Other Packaged Goods
-If Tax Rate Applied in the bill
-1.8% for Food Items
-8.1% for Non-Food Items
-Else 
-	Calculate the bill without the TAX. (do it intutively)
-Tax Amount
-calculated as Tax Rate × Total Price
-Extra Charges
-the share of additional fees (service/delivery/etc.) distributed evenly (if present)
-Final Item Total
-calculated as Total Price + Tax Amount + Extra Charges
-Step 2: Handling Tax Distribution
+Quantity (if specified)
+Price per unit (if applicable)
+Total Price per item before any extra charges/taxes
+Item Type (Produce or Packaged)
+Tax Rate Applied (1.8% for Produce, 8.1% for Packaged)
+Extra Charges Applied (if any)
+Item Total After Charges and Taxes
+Tax Breakdown
 
-Determine the applicable tax policy:
-Single Tax Rate for the entire bill → distribute proportionally per item based on cost
-Multiple Tax Rates → assign 1.8% to food items and 8.1% to non-food items
-Verify that the correct tax rate is assigned to each item.
-Compute the total tax by summing all individual item tax amounts.
-Step 3: Handling Extra Charges
+Tax on Produce (1.8%)
+Tax on Packaged Goods (8.1%)
+Total Additional Charges (if any, like service charge)
+Grand Total (Subtotal + Tax + Charges)
+Payment Details
 
-If additional charges (like service/delivery fees) appear, distribute them evenly across all items.
-Update each item’s final total by adding its share of the extra charges.  Also if there is not taxes in the bill. Exempt it and calculate with the given information also what you can in formula(multiply by One % so that it does not change the subtotal)
-
+Payment Method (Cash, Credit Card, Debit Card, etc.)
+Step 2: Handling Extra Charges
+If there are additional charges (like a service charge), distribute them equally across all items.
+Update the total price per item after adding proportional extra charges.
+Step 3: Format the Output as a JSON Object
 {
   "storeInformation": {
     "title": "",
@@ -63,49 +58,70 @@ Update each item’s final total by adding its share of the extra charges.  Also
     "paymentMethod": "" // e.g., Cash, Credit Card, Debit Card, etc.
   }
 }
+Step 4: Verification Process
+Sum Check for Subtotals
 
-Step 5: Verification Process
-subtotal = ...   # The pre-tax total
-tax       = ...  # The total tax amount you have found (could be calculated or provided)
+Ensure Subtotal = Sum of all item total prices before taxes and extra charges.
+Tax Calculation Verification
 
-calculated_total = subtotal + tax
+Verify that the correct tax rate (1.8% or 8.1%) has been applied based on the item type.
+Compute Total Tax = Tax on Produce + Tax on Packaged and ensure correctness.
+Distribute Extra Charges Proportionally
 
-# Condition A: If (subtotal + tax) == subtotal
-#    -> This effectively means there is no tax (tax = 0).
-#       So final price is just the subtotal.
-#
-# Condition B: Otherwise, if the sum does not match the subtotal,
-#    -> Then your calculated total is correct, so final price = subtotal + tax.
-#     show that correct TAX that is applied
-#
-# Condition C: If none of these apply or there's some extra logic, 
-#    -> Do the normal calculation (i.e., sum them up).
-#
+If extra charges exist, ensure they are evenly divided among all items.
+Final Grand Total Check
 
-if calculated_total == subtotal:
-    final_price = subtotal
-else:
-    final_price = calculated_total
-
-
-
-
-
-
-Subtotal Check:
-Ensure the subtotal equals the sum of all item total prices before applying taxes and extra charges.
-New Bullet: After extracting all items from the bill or OCR, manually sum all the item totals. Compare this manually calculated subtotal with the subtotal shown on the bill. If they match, indicate "bill matched"; if not, use the manually computed total as the bill total.
-Tax Calculation Verification:
-Confirm that the correct tax rate (1.8% for Food Items, 8.1% for Non-Food Items) has been applied.
-Compute and verify the total tax:
-Total Tax = Sum of all individual item tax amounts.
-Extra Charges Distribution:
-Confirm that any extra charges are evenly distributed across all items and correctly added.
-Final Grand Total Check:
-Ensure the final grand total equals:
+Confirm:
 Grand Total = Subtotal + Total Extra Charges + Total Tax
+One-by-One Validation:
+Compute sum of each column individually.
+Compare with the expected total to identify any discrepancies.
+If a discrepancy is found, mark it with a warning:
 
-No Tax applied:if there are not tax in bill, just try to match the sub total and sum of all the items
-Discrepancy Warning:
-If discrepancies are found, include a warning:
+❌ Warning: The total does not match the expected sum. Please verify the bill manually.
 
+Step 5: Send JSON to Website
+Send the JSON object to the specified endpoint on your website to pre-fill the fields.
+
+Example Output
+{
+  "storeInformation": {
+    "storeName": "Trader Joe’s",
+    "storeAddress": "940 E. University Drive, Suite 105, Tempe, AZ 85281",
+    "storeContact": "480-968-1573",
+    "dateTimeOfPurchase": "2023-10-25" (stictly in this format)
+  },
+  "items": [
+    {
+      "itemName": "Cracked Wheat Sourdough",
+      "quantity": 1,
+      "pricePerUnit": 3.49,
+      "totalPrice": 3.49,
+      "itemType": "Packaged",
+      "taxRate": 8.1,
+      "extraCharges": 0.50,
+      "taxAmount": 0.28,
+      "itemTotalAfterChargesAndTax": 4.27
+    },
+    {
+      "itemName": "Ginger Organic (3 oz)",
+      "quantity": 1,
+      "pricePerUnit": 1.99,
+      "totalPrice": 1.99,
+      "itemType": "Produce",
+      "taxRate": 1.8,
+      "extraCharges": 0.50,
+      "taxAmount": 0.04,
+      "itemTotalAfterChargesAndTax": 2.53
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 12.87,
+  "totalExtraChargesDistributed": 3.50,
+  "taxOnProduce": 0.23,
+  "taxOnPackaged": 3.99,
+  "grandTotal": 17.41,
+  "paymentDetails": {
+    "paymentMethod": "Visa Debit"
+  }
+}
