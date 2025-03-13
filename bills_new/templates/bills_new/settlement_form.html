@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Settlement Payment</title>
+</head>
+<body>
+    <h1>Create Settlement Payment</h1>
+    
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+    
+    {% if error %}
+        <p style="color: red;">Error: {{ error }}</p>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <label for="from_person">From (Payer):</label>
+        <select name="from_person_id" id="from_person">
+            {% for person in persons %}
+                <option value="{{ person.id }}">{{ person.user.username }}</option>
+            {% endfor %}
+        </select>
+        <br/><br/>
+        
+        <label for="to_person">To (Receiver):</label>
+        <select name="to_person_id" id="to_person">
+            {% for person in persons %}
+                <option value="{{ person.id }}">{{ person.user.username }}</option>
+            {% endfor %}
+        </select>
+        <br/><br/>
+        
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" id="amount" required />
+        <br/><br/>
+        
+        <label for="date">Date:</label>
+        <input type="date" name="date" id="date" required />
+        <br/><br/>
+        
+        <label for="description">Description:</label>
+        <textarea name="description" id="description"></textarea>
+        <br/><br/>
+        
+        <button type="submit">Create Settlement</button>
+    </form>
+</body>
+</html>

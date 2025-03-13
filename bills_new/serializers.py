@@ -205,3 +205,19 @@ class BillSerializer(serializers.Serializer):
         return Decimal('0')
     
 
+class SettlementPaymentSerializer(serializers.Serializer):
+    from_person_id = serializers.IntegerField()
+    to_person_id = serializers.IntegerField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    date = serializers.DateField()
+    description = serializers.CharField(required=False, allow_blank=True)
+    
+    def validate_amount(self, value):
+        if value <= Decimal('0.00'):
+            raise serializers.ValidationError("Amount must be positive.")
+        return value
+
+    def validate(self, data):
+        if data['from_person_id'] == data['to_person_id']:
+            raise serializers.ValidationError("Payer and receiver must be different.")
+        return data

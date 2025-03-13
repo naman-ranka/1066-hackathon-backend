@@ -2,13 +2,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-from .serializers import BillSerializer, GroupSerializer, PersonSerializer
+from .serializers import BillSerializer, GroupSerializer, PersonSerializer, SettlementPaymentSerializer
 from .services import BillService
 from .models import Bill, BillParticipant, BillItem, ItemShare, Payment, Group, Person
 from django.db.models import Sum, Q
 from decimal import Decimal
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
 
 
 
@@ -216,8 +218,8 @@ def person_balance_dashboard(request, person_id=None):
     # Get all bill payments
     bill_payments = Payment.objects.filter(
         person=person,
-        payment_type='BILL'
-    ).select_related('bill').order_by('-date')
+        # payment_type='BILL'
+    )
     
     # Calculate person balances for settlements
     # Find all people that the current person has transactions with
@@ -264,3 +266,86 @@ def person_balance_dashboard(request, person_id=None):
     }
     
     return render(request, 'bills_new/person_balance_dashboard.html', context)
+
+
+@api_view(['POST'])
+def save_settlement_api(request):
+    """
+    API endpoint to save a settlement type payment using a serializer for validation.
+    """
+    serializer = SettlementPaymentSerializer(data=request.data)
+    if serializer.is_valid():
+        validated_data = serializer.validated_data
+        try:
+            from_person = Person.objects.get(id=validated_data['from_person_id'])
+            to_person = Person.objects.get(id=validated_data['to_person_id'])
+            amount = validated_data['amount']
+            date = validated_data['date']
+            description = validated_data.get('description', '')
+            
+            # Create the settlement using the Payment model's helper method
+            settlement_payment = Payment.create_settlement(from_person, to_person, amount, date, description)
+            
+            return Response({
+                'success': True,
+                'message': 'Settlement payment created successfully',
+                'settlement_payment_id': settlement_payment.id
+            })
+        except Person.DoesNotExist as e:
+            return Response({'success': False, 'error': str(e)}, status=400)
+        except Exception as e:
+            return Response({'success': False, 'error': str(e)}, status=400)
+    else:
+        return Response({'success': False, 'errors': serializer.errors}, status=400)
+
+
+def settlement_form_view(request):
+    """
+    Temporary HTML view to render a form for creating settlement payments.
+    This view shows a simple form (e.g., with dropdowns populated from Person objects)
+    and processes POST requests to create a settlement.
+    """
+    if request.method == 'POST':
+        from_person_id = request.POST.get('from_person_id')
+        to_person_id = request.POST.get('to_person_id')
+        amount = request.POST.get('amount')
+        date = request.POST.get('date')
+        description = request.POST.get('description', '')
+        
+        try:
+            from_person = Person.objects.get(id=from_person_id)
+            to_person = Person.objects.get(id=to_person_id)
+            settlement_payment = Payment.create_settlement(from_person, to_person, Decimal(amount), date, description)
+            message = f"Settlement created successfully, payment ID: {settlement_payment.id}"
+            persons = Person.objects.all()
+            return render(request, 'bills_new/settlement_form.html', {'persons': persons, 'message': message})
+        except Exception as e:
+            persons = Person.objects.all()
+            return render(request, 'bills_new/settlement_form.html', {'persons': persons, 'error': str(e)})
+    else:
+        persons = Person.objects.all()
+        return render(request, 'bills_new/settlement_form.html', {'persons': persons})
+
+
+def settlement_payments_view(request, person_id=None):
+    """
+    Temporary view to display settlement payments for a person.
+    If person_id is not provided, uses the logged-in user's profile.
+    """
+    if person_id:
+        person = get_object_or_404(Person, id=person_id)
+    else:
+        # Assumes the user is logged in and has a related profile.
+        person = request.user.profile
+
+    # Filter settlement payments (payment_type='SETTLEMENT') for the person.
+    settlement_payments = Payment.objects.filter(
+        payment_type='SETTLEMENT',
+        person=person
+    ).order_by('-date')
+
+    context = {
+        'person': person,
+        'settlement_payments': settlement_payments
+    }
+    return render(request, 'bills_new/settlement_payments.html', context)
