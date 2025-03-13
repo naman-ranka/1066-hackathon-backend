@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views
+from . import views, personal_expense_views
 
 router = DefaultRouter()
 # router.register(r'persons', views.PersonViewSet)
@@ -22,4 +22,16 @@ urlpatterns = [
 
     path('dashboard/', views.person_balance_dashboard, name='balance_dashboard'),
     path('dashboard/<int:person_id>/', views.person_balance_dashboard, name='person_balance_dashboard'),
+
+    path('settlement/api/', views.save_settlement_api, name='save_settlement_api'),
+    path('settlement/form/', views.settlement_form_view, name='settlement_form'),
+
+    path('settlement/payments/<int:person_id>/', views.settlement_payments_view, name='settlement_payments'),
+    path('settlement/payments/', views.settlement_payments_view, name='settlement_payments'),
+
+    # save personal expense
+    path('personal-expense/save/', personal_expense_views.save_personal_expense, name='save_personal_expense'),
+
+
 ]
+

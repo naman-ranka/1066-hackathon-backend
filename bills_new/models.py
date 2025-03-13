@@ -2,6 +2,29 @@ from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
 
+class PersonManager(models.Manager):
+    def get_others_person(self):
+        """Get or create the special 'Others' person used for personal expense tracking"""
+        others_user, created = User.objects.get_or_create(
+            username='__others__',
+            defaults={
+                'first_name': 'Others',
+                'last_name': '',
+                'email': 'others@example.com',
+                'is_active': False  # This user should never be able to log in
+            }
+        )
+        
+        others_person, created = self.get_or_create(
+            user=others_user,
+            defaults={
+                'phone_number': ''
+            }
+        )
+        
+        return others_person
+
+
 
 class Person(models.Model):
     """
@@ -11,6 +34,8 @@ class Person(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(max_length=15, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    objects = PersonManager()
     
     def __str__(self):
         return self.user.username
@@ -41,6 +66,9 @@ class Bill(models.Model):
     created_by = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='created_bills')
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True, related_name='bills')
     participants = models.ManyToManyField(Person, related_name='bills', through='BillParticipant')
+
+    # Add is_personal field to flag personal expenses
+    is_personal = models.BooleanField(default=False)
     
     def __str__(self):
         return self.title
