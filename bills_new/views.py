@@ -91,37 +91,7 @@ def bill_detail(request, bill_id):
     }
     return render(request, 'bills_new/bill_detail.html', context)
 
-def bill_create(request):
-    """View to display the form for creating a new bill"""
-    groups = Group.objects.all().order_by('name')
-    persons = Person.objects.all().order_by('user__username')
-    
-    context = {
-        'groups': groups,
-        'persons': persons
-    }
-    
-    return render(request, 'bills_new/bill_create.html', context)
 
-def bill_item_matrix(request):
-    """View to display the matrix split view for an item"""
-    item_id = request.GET.get('item_id')
-    item_name = request.GET.get('item_name', 'Unnamed Item')
-    item_price = request.GET.get('item_price', '0.00')
-    
-    # Get all the participants that have been selected in the bill form
-    # This would come from the bill creation form through URL parameters
-    # We'll use all persons in the database for now
-    participants = Person.objects.all()
-    
-    context = {
-        'item_id': item_id,
-        'item_name': item_name,
-        'item_price': item_price,
-        'participants': participants
-    }
-    
-    return render(request, 'bills_new/bill_item_matrix.html', context)
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
