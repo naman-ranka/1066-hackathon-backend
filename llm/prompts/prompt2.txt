@@ -1,0 +1,632 @@
+Step 1: Extract Key Details
+Store Information:
+
+Extract the Title (previously "Store Name").
+
+Extract the Store Address (if available).
+
+Extract the Store Contact (if available).
+
+Extract the Date and Time of Purchase, ensuring the date is strictly in YYYY-MM-DD format.
+
+List of Items:
+For each item on the bill, extract the following details:
+
+Item Name (itemName).
+
+Quantity (quantity) (if specified; for informational purposes only, no calculations should use this quantity).
+
+Total Price per Item (totalPrice) (the complete, final line-item cost as shown on the bill; do not calculate quantity Ã— pricePerUnit).
+
+Item Type (itemType): Categorize items as:
+
+Food Items: Produce, Dairy, Meat, Grains, Snacks, Beverages.
+
+Non-Food Items: Electronics, Cosmetics, Appliances, Other Packaged Goods.
+
+Extra Charges Applied (extraCharges) (if any).
+
+Tax Rate Applied (tax%):
+
+If a tax amount is explicitly mentioned, calculate the effective tax rate as:
+
+Copy
+effectiveTaxRate = (taxAmount / subtotalBeforeChargesAndTaxes) Ã— 100
+If no tax amount is mentioned, apply the default rates: 1.8% for Food Items and 8.1% for Non-Food Items.
+
+If no tax is applied (see Step 2), set ALL tax% to 0.0.
+
+Tax Amount (taxAmount): Calculated as Tax Rate Ã— Total Price.
+
+Final Item Total (itemTotalAfterTax): Calculated as Total Price + Tax Amount + Extra Charges.
+
+Step 2: Tax Calculation and Application (CRITICAL)
+
+1. Calculate Effective Tax Rate:
+   - Identify subtotalBeforeChargesAndTaxes and totalTax from the receipt.
+   - effectiveTaxRate = (totalTax / subtotalBeforeChargesAndTaxes) Ã— 100
+
+2. Apply Effective Tax Rate to Items:
+   - For each item:
+     - taxAmount = (effectiveTaxRate / 100) Ã— totalPrice
+     - itemTotalAfterTax = totalPrice + taxAmount + extraCharges (if any)
+
+3. Update Overall Totals:
+   - totalTax = Sum of all individual item tax amounts.
+   - grandTotal = Sum of all itemTotalAfterTax.
+
+
+Step 4: Data Validation
+
+Subtotal Check:
+
+Ensure the subtotalBeforeChargesAndTaxes equals the sum of all item totalPrice values before applying taxes and extra charges.
+
+If thereâ€™s a mismatch, prioritize the receiptâ€™s actual values and note the discrepancy.
+
+Tax Calculation Verification:
+
+Confirm that the correct tax rate has been applied.
+
+Compute and verify the Total Tax:
+
+Total Tax = Sum of all individual item tax amounts.
+
+Extra Charges Distribution:
+
+Confirm that any extra charges are evenly distributed across all items and correctly added.
+
+Final Grand Total Check:
+
+Ensure the grandTotal matches the expected calculation:
+
+Grand Total = Subtotal + Total Extra Charges + Total Tax.
+
+If discrepancies are found, include a warning:
+
+âŒ Warning: The total does not match the expected sum. Please verify the bill manually.
+
+Step 5: JSON Output Format
+
+
+{
+  "storeInformation": {
+    "title": "", // Store name
+    "storeAddress": "",
+    "storeContact": "",
+    "dateTimeOfPurchase": "" // in YYYY-MM-DD format
+  },
+  "items": [
+    {
+      "name": "",
+      "quantity": 0,
+      "totalPrice": 0.0,
+      "itemType": "",
+      "tax": 0.0, // in percent
+      "taxAmount": 0.0,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 0.0
+    }
+    // ... more items ...
+  ],
+  "subtotalBeforeChargesAndTaxes": 0.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.0,
+  "effectiveTaxRate": 0.0, // Added field for calculated effective tax rate
+  "grandTotal": 0.0,
+  "paymentDetails": {
+    "paymentMethod": "" // e.g., Cash, Credit Card, Debit Card, etc.
+  }
+}
+JSON Examples:
+Example 1: Explicit Tax Amount Mentioned (7% Mentioned, but Effective Tax Rate Calculated)
+
+{
+  "storeInformation": {
+    "title": "QuickMart",
+    "storeAddress": "321 Pine St, Hamletville",
+    "storeContact": "+1-555-1122",
+    "dateTimeOfPurchase": "2023-10-18"
+  },
+  "items": [
+    {
+      "name": "Bread",
+      "quantity": 1,
+      "totalPrice": 3.0,
+      "itemType": "Grains",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 0.13,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 3.13
+    },
+    {
+      "name": "Soap",
+      "quantity": 2,
+      "totalPrice": 4.0,
+      "itemType": "Cosmetics",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 0.17,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 4.17
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 7.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.3,
+  "effectiveTaxRate": 4.35, // Calculated as (0.3 / 7.0) Ã— 100
+  "grandTotal": 7.3,
+  "paymentDetails": {
+    "paymentMethod": "Credit Card"
+  }
+}
+Example 2: Explicit Tax Amount Mentioned (7% Mentioned, but Effective Tax Rate Calculated)
+
+{
+  "storeInformation": {
+    "title": "SuperMart",
+    "storeAddress": "123 Main St, Cityville",
+    "storeContact": "+1-555-1234",
+    "dateTimeOfPurchase": "2023-10-15"
+  },
+  "items": [
+    {
+      "name": "Apple",
+      "quantity": 5,
+      "totalPrice": 10.0,
+      "itemType": "Produce",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 0.43,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 10.43
+    },
+    {
+      "name": "Shampoo",
+      "quantity": 1,
+      "totalPrice": 8.0,
+      "itemType": "Cosmetics",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 0.35,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 8.35
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 18.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.78,
+  "effectiveTaxRate": 4.35, // Calculated as (0.78 / 18.0) Ã— 100
+  "grandTotal": 18.78,
+  "paymentDetails": {
+    "paymentMethod": "Credit Card"
+  }
+}
+Example 3: Explicit Tax Amount Mentioned (7% Mentioned, but Effective Tax Rate Calculated)
+
+{
+  "storeInformation": {
+    "title": "MegaStore",
+    "storeAddress": "654 Birch St, Countryside",
+    "storeContact": "+1-555-3344",
+    "dateTimeOfPurchase": "2023-10-19"
+  },
+  "items": [
+    {
+      "name": "Chicken",
+      "quantity": 1,
+      "totalPrice": 12.0,
+      "itemType": "Meat",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 0.52,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 12.52
+    },
+    {
+      "name": "Blender",
+      "quantity": 1,
+      "totalPrice": 30.0,
+      "itemType": "Appliances",
+      "tax": 4.35, // Effective tax rate
+      "taxAmount": 1.31,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 31.31
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 42.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 1.83,
+  "effectiveTaxRate": 4.35, // Calculated as (1.83 / 42.0) Ã— 100
+  "grandTotal": 43.83,
+  "paymentDetails": {
+    "paymentMethod": "Debit Card"
+  }
+}
+Additional JSON Examples:
+Example 1: Explicit Tax Mentioned but Not Applied Uniformly
+
+{
+  "storeInformation": {
+    "title": "QuickMart",
+    "storeAddress": "321 Pine St, Hamletville",
+    "storeContact": "+1-555-1122",
+    "dateTimeOfPurchase": "2023-10-18"
+  },
+  "items": [
+    {
+      "name": "Bread",
+      "quantity": 1,
+      "totalPrice": 3.0,
+      "itemType": "Grains",
+      "tax": 6.67, // Effective tax rate
+      "taxAmount": 0.2,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 3.2
+    },
+    {
+      "name": "Soap",
+      "quantity": 2,
+      "totalPrice": 4.0,
+      "itemType": "Cosmetics",
+      "tax": 6.67, // Effective tax rate
+      "taxAmount": 0.27,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 4.27
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 7.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.47,
+  "effectiveTaxRate": 6.67, // Calculated as (7.47 - 7.0) / 7.0
+  "grandTotal": 7.47,
+  "paymentDetails": {
+    "paymentMethod": "Credit Card"
+  }
+}
+Example 2: Explicit Tax Mentioned but Not Applied Uniformly (Higher Tax Rate)
+
+{
+  "storeInformation": {
+    "title": "SuperStore",
+    "storeAddress": "654 Birch St, Countryside",
+    "storeContact": "+1-555-3344",
+    "dateTimeOfPurchase": "2023-10-19"
+  },
+  "items": [
+    {
+      "name": "Chicken",
+      "quantity": 1,
+      "totalPrice": 12.0,
+      "itemType": "Meat",
+      "tax": 10.0, // Effective tax rate
+      "taxAmount": 1.2,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 13.2
+    },
+    {
+      "name": "Blender",
+      "quantity": 1,
+      "totalPrice": 30.0,
+      "itemType": "Appliances",
+      "tax": 10.0, // Effective tax rate
+      "taxAmount": 3.0,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 33.0
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 42.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 4.2,
+  "effectiveTaxRate": 10.0, // Calculated as (46.2 - 42.0) / 42.0
+  "grandTotal": 46.2,
+  "paymentDetails": {
+    "paymentMethod": "Debit Card"
+  }
+}
+Example 3: Explicit Tax Mentioned but Not Applied Uniformly (Lower Tax Rate)
+
+{
+  "storeInformation": {
+    "title": "DiscountMart",
+    "storeAddress": "789 Oak St, Villagetown",
+    "storeContact": "+1-555-9101",
+    "dateTimeOfPurchase": "2023-10-17"
+  },
+  "items": [
+    {
+      "name": "Notebook",
+      "quantity": 3,
+      "totalPrice": 6.0,
+      "itemType": "Other Packaged Goods",
+      "tax": 5.0, // Effective tax rate
+      "taxAmount": 0.3,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 6.3
+    },
+    {
+      "name": "Pen",
+      "quantity": 5,
+      "totalPrice": 5.0,
+      "itemType": "Other Packaged Goods",
+      "tax": 5.0, // Effective tax rate
+      "taxAmount": 0.25,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 5.25
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 11.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.55,
+  "effectiveTaxRate": 5.0, // Calculated as (11.55 - 11.0) / 11.0
+  "grandTotal": 11.55,
+  "paymentDetails": {
+    "paymentMethod": "Cash"
+  }
+}
+Example 1: Single Tax Rate (5%) with Extra Charges
+
+{
+  "storeInformation": {
+    "title": "QuickMart",
+    "storeAddress": "321 Pine St, Hamletville",
+    "storeContact": "+1-555-1122",
+    "dateTimeOfPurchase": "2023-10-18"
+  },
+  "items": [
+    {
+      "name": "Bread",
+      "quantity": 1,
+      "totalPrice": 3.0,
+      "itemType": "Grains",
+      "tax": 5.0,
+      "taxAmount": 0.15,
+      "extraCharges": 1.0,
+      "itemTotalAfterTax": 4.15
+    },
+    {
+      "name": "Soap",
+      "quantity": 2,
+      "totalPrice": 4.0,
+      "itemType": "Cosmetics",
+      "tax": 5.0,
+      "taxAmount": 0.2,
+      "extraCharges": 1.0,
+      "itemTotalAfterTax": 5.2
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 7.0,
+  "totalExtraChargesDistributed": 2.0,
+  "totalTax": 0.35,
+  "explicitTaxRate": 5.0,
+  "grandTotal": 9.35,
+  "paymentDetails": {
+    "paymentMethod": "Credit Card"
+  }
+}
+Example 2: Differential Tax Rates (1.8% for Food, 8.1% for Non-Food)
+
+{
+  "storeInformation": {
+    "title": "Grocery World",
+    "storeAddress": "456 Elm St, Townsville",
+    "storeContact": "+1-555-5678",
+    "dateTimeOfPurchase": "2023-10-16"
+  },
+  "items": [
+    {
+      "name": "Milk",
+      "quantity": 2,
+      "totalPrice": 5.0,
+      "itemType": "Dairy",
+      "tax": 1.8,
+      "taxAmount": 0.09,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 5.09
+    },
+    {
+      "name": "Headphones",
+      "quantity": 1,
+      "totalPrice": 50.0,
+      "itemType": "Electronics",
+      "tax": 8.1,
+      "taxAmount": 4.05,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 54.05
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 55.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 4.14,
+  "explicitTaxRate": 0.0,
+  "grandTotal": 59.14,
+  "paymentDetails": {
+    "paymentMethod": "Debit Card"
+  }
+}
+Example 3: No Tax Applied
+
+{
+  "storeInformation": {
+    "title": "Discount Store",
+    "storeAddress": "789 Oak St, Villagetown",
+    "storeContact": "+1-555-9101",
+    "dateTimeOfPurchase": "2023-10-17"
+  },
+  "items": [
+    {
+      "name": "Notebook",
+      "quantity": 3,
+      "totalPrice": 6.0,
+      "itemType": "Other Packaged Goods",
+      "tax": 0.0,
+      "taxAmount": 0.0,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 6.0
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 6.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.0,
+  "explicitTaxRate": 0.0,
+  "grandTotal": 6.0,
+  "paymentDetails": {
+    "paymentMethod": "Cash"
+  }
+}
+Example 4: Explicit Tax Mentioned but Not Applied Uniformly
+
+{
+  "storeInformation": {
+    "title": "QuickMart",
+    "storeAddress": "321 Pine St, Hamletville",
+    "storeContact": "+1-555-1122",
+    "dateTimeOfPurchase": "2023-10-18"
+  },
+  "items": [
+    {
+      "name": "Bread",
+      "quantity": 1,
+      "totalPrice": 3.0,
+      "itemType": "Grains",
+      "tax": 6.67, // Effective tax rate
+      "taxAmount": 0.2,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 3.2
+    },
+    {
+      "name": "Soap",
+      "quantity": 2,
+      "totalPrice": 4.0,
+      "itemType": "Cosmetics",
+      "tax": 6.67, // Effective tax rate
+      "taxAmount": 0.27,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 4.27
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 7.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.47,
+  "effectiveTaxRate": 6.67, // Calculated as (7.47 - 7.0) / 7.0
+  "grandTotal": 7.47,
+  "paymentDetails": {
+    "paymentMethod": "Credit Card"
+  }
+}
+Example 5: Mixed Tax Rates with Extra Charges
+
+{
+  "storeInformation": {
+    "title": "MegaStore",
+    "storeAddress": "654 Birch St, Countryside",
+    "storeContact": "+1-555-3344",
+    "dateTimeOfPurchase": "2023-10-19"
+  },
+  "items": [
+    {
+      "name": "Chicken",
+      "quantity": 1,
+      "totalPrice": 12.0,
+      "itemType": "Meat",
+      "tax": 1.8,
+      "taxAmount": 0.216,
+      "extraCharges": 1.5,
+      "itemTotalAfterTax": 13.716
+    },
+    {
+      "name": "Blender",
+      "quantity": 1,
+      "totalPrice": 30.0,
+      "itemType": "Appliances",
+      "tax": 8.1,
+      "taxAmount": 2.43,
+      "extraCharges": 1.5,
+      "itemTotalAfterTax": 33.93
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 42.0,
+  "totalExtraChargesDistributed": 3.0,
+  "totalTax": 2.646,
+  "explicitTaxRate": 0.0,
+  "grandTotal": 47.646,
+  "paymentDetails": {
+    "paymentMethod": "Debit Card"
+  }
+}
+Example 6: Explicit Tax Mentioned but Not Applied Uniformly (Higher Tax Rate)
+
+{
+  "storeInformation": {
+    "title": "SuperStore",
+    "storeAddress": "654 Birch St, Countryside",
+    "storeContact": "+1-555-3344",
+    "dateTimeOfPurchase": "2023-10-19"
+  },
+  "items": [
+    {
+      "name": "Chicken",
+      "quantity": 1,
+      "totalPrice": 12.0,
+      "itemType": "Meat",
+      "tax": 10.0, // Effective tax rate
+      "taxAmount": 1.2,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 13.2
+    },
+    {
+      "name": "Blender",
+      "quantity": 1,
+      "totalPrice": 30.0,
+      "itemType": "Appliances",
+      "tax": 10.0, // Effective tax rate
+      "taxAmount": 3.0,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 33.0
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 42.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 4.2,
+  "effectiveTaxRate": 10.0, // Calculated as (46.2 - 42.0) / 42.0
+  "grandTotal": 46.2,
+  "paymentDetails": {
+    "paymentMethod": "Debit Card"
+  }
+}
+Example 7: Explicit Tax Mentioned but Not Applied Uniformly (Lower Tax Rate)
+
+{
+  "storeInformation": {
+    "title": "DiscountMart",
+    "storeAddress": "789 Oak St, Villagetown",
+    "storeContact": "+1-555-9101",
+    "dateTimeOfPurchase": "2023-10-17"
+  },
+  "items": [
+    {
+      "name": "Notebook",
+      "quantity": 3,
+      "totalPrice": 6.0,
+      "itemType": "Other Packaged Goods",
+      "tax": 5.0, // Effective tax rate
+      "taxAmount": 0.3,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 6.3
+    },
+    {
+      "name": "Pen",
+      "quantity": 5,
+      "totalPrice": 5.0,
+      "itemType": "Other Packaged Goods",
+      "tax": 5.0, // Effective tax rate
+      "taxAmount": 0.25,
+      "extraCharges": 0.0,
+      "itemTotalAfterTax": 5.25
+    }
+  ],
+  "subtotalBeforeChargesAndTaxes": 11.0,
+  "totalExtraChargesDistributed": 0.0,
+  "totalTax": 0.55,
+  "effectiveTaxRate": 5.0, // Calculated as (11.55 - 11.0) / 11.0
+  "grandTotal": 11.55,
+  "paymentDetails": {
+    "paymentMethod": "Cash"
+  }
+}

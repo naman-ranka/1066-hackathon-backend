@@ -13,6 +13,13 @@
         .slider-group { margin-top: 10px; }
         .slider-group label { display: block; margin-bottom: 5px; }
         .preview-image { max-width: 100%; margin-top: 10px; }
+        .form-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .form-group.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -32,7 +39,7 @@
             <input type="file" id="images" name="files[]" multiple accept="image/*">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="ocrOptions">
             <label for="provider">OCR Provider:</label>
             <select id="provider" name="provider">
                 <option value="google_cloud">Google Cloud Vision</option>
@@ -102,10 +109,19 @@
             document.getElementById('highThresholdValue').textContent = this.value;
         };
 
-        // Toggle enhanced options based on pipeline selection
+        // Toggle enhanced options and OCR provider based on pipeline selection
         document.getElementById('pipeline').onchange = function() {
             const enhancedOptions = document.getElementById('enhancedOptions');
+            const providerGroup = document.querySelector('.form-group:has(#provider)');
+            
             enhancedOptions.classList.toggle('active', this.value === 'enhanced');
+            
+            // Hide OCR provider for Gemini pipeline
+            if (this.value === 'gemini') {
+                providerGroup.classList.add('hidden');
+            } else {
+                providerGroup.classList.remove('hidden');
+            }
         };
 
         // Preview uploaded images
@@ -195,6 +211,13 @@
                 document.getElementById('result').textContent = 'Error: ' + error.message;
             }
         };
+
+        // Initialize pipeline options on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const pipeline = document.getElementById('pipeline');
+            // Trigger the change event to set initial state
+            pipeline.dispatchEvent(new Event('change'));
+        });
     </script>
 </body>
 </html>

@@ -52,14 +52,14 @@ def read_prompt_file() -> str:
         FileNotFoundError: If prompt file doesn't exist
         IOError: If prompt file can't be read
     """
-    prompt_file_path = os.path.join(settings.BASE_DIR, "llm", "prompts", "prompt.txt")
+    prompt_file_path = os.path.join(settings.BASE_DIR, "llm", "prompts", "prompt2.txt")
     try:
         with open(prompt_file_path, "r", encoding="utf-8") as f:
             return f.read().strip()
     except FileNotFoundError:
         logger.error(f"Prompt file not found at {prompt_file_path}")
         # Fallback to the root prompt file
-        root_prompt_path = os.path.join(settings.BASE_DIR, "prompt.txt")
+        # root_prompt_path = os.path.join(settings.BASE_DIR, "prompt.txt")
         try:
             with open(root_prompt_path, "r", encoding="utf-8") as f:
                 return f.read().strip()
@@ -594,3 +594,4 @@ def process_ocr_text_with_llm(ocr_text: str, custom_prompt: Optional[str] = None
         raise RuntimeError("Gemini returned empty response")
 
     return response.text
+
