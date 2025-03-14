@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('bills.urls')),
     path('api/new/', include('bills_new.urls')),  # Added new bills_new API under /api/new/ endpoint
-    path('api/', include('llm.urls')),
+    path('api/', include('llm.urls')),  # Keep API endpoints under /api/
+    path('llm/', include('llm.urls')),  # Add template URLs under /llm/
     path('', include('dashboards.urls')),
     path('api/', include('tasks.urls')),
 ]

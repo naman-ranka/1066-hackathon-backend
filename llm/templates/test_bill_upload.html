@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Bill Image Upload</title>
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .form-group { margin-bottom: 15px; }
+        #result { margin-top: 20px; white-space: pre-wrap; }
+        .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
+        .checkbox-group label { display: flex; align-items: center; gap: 5px; }
+        .pipeline-options { display: none; }
+        .pipeline-options.active { display: block; }
+        .slider-group { margin-top: 10px; }
+        .slider-group label { display: block; margin-bottom: 5px; }
+        .preview-image { max-width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Test Bill Image Upload</h2>
+    <form id="uploadForm">
+        <div class="form-group">
+            <label for="pipeline">Processing Pipeline:</label>
+            <select id="pipeline" name="pipeline">
+                <option value="simple">Simple (OCR + LLM)</option>
+                <option value="enhanced">Enhanced (Canny Edge + OCR + LLM)</option>
+                <option value="gemini">Gemini Vision Only</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="images">Select Images:</label>
+            <input type="file" id="images" name="files[]" multiple accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="provider">OCR Provider:</label>
+            <select id="provider" name="provider">
+                <option value="google_cloud">Google Cloud Vision</option>
+                <option value="tesseract">Tesseract</option>
+            </select>
+        </div>
+
+        <!-- Enhanced Pipeline Options -->
+        <div id="enhancedOptions" class="pipeline-options">
+            <div class="form-group">
+                <label>Image Processing Options:</label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="crop_receipt" name="crop_receipt" checked>
+                        Auto-crop Receipt
+                    </label>
+                    <label>
+                        <input type="checkbox" id="apply_edges" name="apply_edges" checked>
+                        Edge Detection
+                    </label>
+                    <label>
+                        <input type="checkbox" id="denoise" name="denoise" checked>
+                        Denoise
+                    </label>
+                    <label>
+                        <input type="checkbox" id="sharpen" name="sharpen" checked>
+                        Sharpen
+                    </label>
+                </div>
+                <div class="slider-group">
+                    <label for="edge_low_threshold">Edge Detection Low Threshold (1-100):</label>
+                    <input type="range" id="edge_low_threshold" name="edge_low_threshold" 
+                           min="1" max="100" value="50">
+                    <span id="lowThresholdValue">50</span>
+                </div>
+                <div class="slider-group">
+                    <label for="edge_high_threshold">Edge Detection High Threshold (1-200):</label>
+                    <input type="range" id="edge_high_threshold" name="edge_high_threshold" 
+                           min="1" max="200" value="150">
+                    <span id="highThresholdValue">150</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="custom_prompt">Custom Prompt (optional):</label>
+            <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50"></textarea>
+        </div>
+
+        <button type="submit">Upload and Process</button>
+    </form>
+    
+    <!-- Preview section -->
+    <div id="previewSection" style="display: none; margin-top: 20px;">
+        <h3>Processing Preview</h3>
+        <div id="imagePreview"></div>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        // Update threshold values display
+        document.getElementById('edge_low_threshold').oninput = function() {
+            document.getElementById('lowThresholdValue').textContent = this.value;
+        };
+        document.getElementById('edge_high_threshold').oninput = function() {
+            document.getElementById('highThresholdValue').textContent = this.value;
+        };
+
+        // Toggle enhanced options based on pipeline selection
+        document.getElementById('pipeline').onchange = function() {
+            const enhancedOptions = document.getElementById('enhancedOptions');
+            enhancedOptions.classList.toggle('active', this.value === 'enhanced');
+        };
+
+        // Preview uploaded images
+        document.getElementById('images').onchange = function(e) {
+            const previewSection = document.getElementById('previewSection');
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = '';
+            
+            if (e.target.files.length > 0) {
+                previewSection.style.display = 'block';
+                Array.from(e.target.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'preview-image';
+                        const wrapper = document.createElement('div');
+                        wrapper.style.marginBottom = '20px';
+                        wrapper.innerHTML = `<h4>Image ${index + 1}</h4>`;
+                        wrapper.appendChild(img);
+                        imagePreview.appendChild(wrapper);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                previewSection.style.display = 'none';
+            }
+        };
+
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const files = document.getElementById('images').files;
+            const pipeline = document.getElementById('pipeline').value;
+            const provider = document.getElementById('provider').value;
+            const customPrompt = document.getElementById('custom_prompt').value;
+            
+            if (pipeline === 'gemini') {
+                // For Gemini pipeline, send only the first image with field name 'image'
+                if (files.length > 0) {
+                    formData.append('image', files[0]);
+                }
+            } else {
+                // For other pipelines, send all files with 'files[]'
+                for (let file of files) {
+                    formData.append('files[]', file);
+                }
+            }
+            
+            formData.append('provider', provider);
+            if (customPrompt) {
+                formData.append('custom_prompt', customPrompt);
+            }
+            
+            // Add pipeline type for Gemini
+            if (pipeline === 'gemini') {
+                formData.append('pipeline', 'gemini');
+            }
+
+            // Add enhanced options if using enhanced pipeline
+            if (pipeline === 'enhanced') {
+                formData.append('crop_receipt', document.getElementById('crop_receipt').checked);
+                formData.append('apply_edges', document.getElementById('apply_edges').checked);
+                formData.append('denoise', document.getElementById('denoise').checked);
+                formData.append('sharpen', document.getElementById('sharpen').checked);
+                formData.append('edge_low_threshold', document.getElementById('edge_low_threshold').value);
+                formData.append('edge_high_threshold', document.getElementById('edge_high_threshold').value);
+            }
+
+            try {
+                let endpoint;
+                if (pipeline === 'enhanced') {
+                    endpoint = '/api/process-enhanced/';
+                } else if (pipeline === 'gemini') {
+                    endpoint = '/api/process-receipt/';
+                } else {
+                    endpoint = '/api/process-simple/';
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
+        };
+    </script>
+</body>
+</html>
